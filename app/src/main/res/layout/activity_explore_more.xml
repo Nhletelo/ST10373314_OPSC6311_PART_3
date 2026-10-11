@@ -123,26 +123,12 @@
 
                         <Button
                             android:id="@+id/btnNextTip"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="44dp"
-                            android:layout_weight="1"
                             android:backgroundTint="#FEBE10"
                             android:textColor="#000000"
                             android:fontFamily="@font/poppins_semibold"
                             android:text="Next Tip"
-                            android:textSize="13sp"
-                            app:cornerRadius="10dp" />
-
-                        <Button
-                            android:id="@+id/btnRefreshInsights"
-                            android:layout_width="0dp"
-                            android:layout_height="44dp"
-                            android:layout_weight="1"
-                            android:layout_marginStart="10dp"
-                            android:backgroundTint="#2C3859"
-                            android:textColor="#FFFFFF"
-                            android:fontFamily="@font/poppins_medium"
-                            android:text="Re-Analyze"
                             android:textSize="13sp"
                             app:cornerRadius="10dp" />
                     </LinearLayout>

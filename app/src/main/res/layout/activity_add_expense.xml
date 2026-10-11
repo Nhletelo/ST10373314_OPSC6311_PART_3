@@ -273,11 +273,11 @@
 
                     </LinearLayout>
 
-                    <!-- Scan or Upload Receipt Section -->
+                    <!-- Scan Receipt Section -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📸 Scan or Upload Receipt (AI Auto-Fill)"
+                        android:text="📸 Scan Receipt (AI Auto-Fill)"
                         android:fontFamily="@font/poppins_semibold"
                         android:textSize="15sp"
                         android:textColor="@color/text_primary"
@@ -302,7 +302,7 @@
                                 android:layout_width="60dp"
                                 android:layout_height="60dp"
                                 android:background="@drawable/button_border_selected"
-                                android:contentDescription="Capture Receipt"
+                                android:contentDescription="Scan Receipt"
                                 android:padding="12dp"
                                 android:scaleType="fitCenter"
                                 app:srcCompat="@drawable/camera" />
@@ -310,35 +310,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Camera"
-                                android:fontFamily="@font/poppins"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"
-                                android:layout_marginTop="4dp" />
-                        </LinearLayout>
-
-                        <!-- Upload Gallery Button -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center"
-                            android:layout_marginStart="20dp">
-
-                            <ImageButton
-                                android:id="@+id/imageButtonGallery"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:background="@drawable/button_border_selected"
-                                android:contentDescription="Upload Receipt"
-                                android:padding="12dp"
-                                android:scaleType="fitCenter"
-                                app:srcCompat="@drawable/gallery" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Upload"
+                                android:text="Scan"
                                 android:fontFamily="@font/poppins"
                                 android:textSize="12sp"
                                 android:textColor="@color/text_secondary"
@@ -353,7 +325,7 @@
                             app:cardElevation="2dp"
                             app:strokeColor="@color/card_border"
                             app:strokeWidth="1dp"
-                            android:layout_marginStart="24dp">
+                            android:layout_marginStart="32dp">
 
                             <ImageView
                                 android:id="@+id/imgCameraImage"
