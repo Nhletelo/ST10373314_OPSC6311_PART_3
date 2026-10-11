@@ -76,91 +76,125 @@ class AddExpense : AppCompatActivity() {
         btnPickTime = binding.btnPickTime
 
         // 1. Advanced Receipt Scanner Launcher (CameraX + Jetpack Compose + AI Analysis & OCR)
-        receiptScannerLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK && result.data != null) {
-                val scannedPath = result.data?.getStringExtra("SCANNED_RECEIPT_PATH")
-                if (!scannedPath.isNullOrEmpty()) {
-                    capturedPhotoPath = scannedPath
-                    capturedPhotoFile = File(scannedPath)
+        receiptScannerLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK && result.data != null) {
+                    val scannedPath = result.data?.getStringExtra("SCANNED_RECEIPT_PATH")
+                    if (!scannedPath.isNullOrEmpty()) {
+                        capturedPhotoPath = scannedPath
+                        capturedPhotoFile = File(scannedPath)
 
-                    Glide.with(this)
-                        .load(capturedPhotoFile)
-                        .into(binding.imgCameraImage)
+                        Glide.with(this)
+                            .load(capturedPhotoFile)
+                            .into(binding.imgCameraImage)
 
-                    Toast.makeText(this, "Receipt captured. AI processing & categorizing...", Toast.LENGTH_SHORT).show()
-                    processReceiptImageWithOCR(capturedPhotoFile!!)
+                        Toast.makeText(
+                            this,
+                            "Receipt captured. AI processing & categorizing...",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        processReceiptImageWithOCR(capturedPhotoFile!!)
 
-                    if (editTextDate.text.isNull_or_blank()) {
-                        editTextDate.text = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
-                    }
-                    if (editTextTime.text.isNull_or_blank()) {
-                        editTextTime.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                        if (editTextDate.text.isNull_or_blank()) {
+                            editTextDate.text =
+                                SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
+                        }
+                        if (editTextTime.text.isNull_or_blank()) {
+                            editTextTime.text =
+                                SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                        }
                     }
                 }
             }
-        }
 
         // 2. Gallery Image Upload Launcher
-        galleryImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                val savedPath = saveSelectedFileToInternalStorage(it, "receipt_${System.currentTimeMillis()}.jpg")
-                if (!savedPath.isNullOrEmpty()) {
-                    capturedPhotoPath = savedPath
-                    capturedPhotoFile = File(savedPath)
+        galleryImageLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+                uri?.let {
+                    val savedPath = saveSelectedFileToInternalStorage(
+                        it,
+                        "receipt_${System.currentTimeMillis()}.jpg"
+                    )
+                    if (!savedPath.isNullOrEmpty()) {
+                        capturedPhotoPath = savedPath
+                        capturedPhotoFile = File(savedPath)
 
-                    Glide.with(this)
-                        .load(capturedPhotoFile)
-                        .into(binding.imgCameraImage)
+                        Glide.with(this)
+                            .load(capturedPhotoFile)
+                            .into(binding.imgCameraImage)
 
-                    Toast.makeText(this, "Receipt uploaded. AI processing & categorizing...", Toast.LENGTH_SHORT).show()
-                    processReceiptImageWithOCR(capturedPhotoFile!!)
+                        Toast.makeText(
+                            this,
+                            "Receipt uploaded. AI processing & categorizing...",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        processReceiptImageWithOCR(capturedPhotoFile!!)
 
-                    if (editTextDate.text.isNull_or_blank()) {
-                        editTextDate.text = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
-                    }
-                    if (editTextTime.text.isNull_or_blank()) {
-                        editTextTime.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                        if (editTextDate.text.isNull_or_blank()) {
+                            editTextDate.text =
+                                SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
+                        }
+                        if (editTextTime.text.isNull_or_blank()) {
+                            editTextTime.text =
+                                SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                        }
                     }
                 }
             }
-        }
 
         findViewById<ImageButton>(R.id.imageButtonGallery).setOnClickListener {
             galleryImageLauncher.launch("image/*")
         }
 
         // 3. High-resolution Fallback Receipt Camera Launcher
-        takePictureLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
-            if (success && capturedPhotoFile != null && capturedPhotoFile!!.exists()) {
-                Glide.with(this)
-                    .load(capturedPhotoFile)
-                    .into(binding.imgCameraImage)
+        takePictureLauncher =
+            registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+                if (success && capturedPhotoFile != null && capturedPhotoFile!!.exists()) {
+                    Glide.with(this)
+                        .load(capturedPhotoFile)
+                        .into(binding.imgCameraImage)
 
-                Toast.makeText(this, "Receipt captured. AI processing & categorizing...", Toast.LENGTH_SHORT).show()
-                processReceiptImageWithOCR(capturedPhotoFile!!)
+                    Toast.makeText(
+                        this,
+                        "Receipt captured. AI processing & categorizing...",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    processReceiptImageWithOCR(capturedPhotoFile!!)
 
-                if (editTextDate.text.isNull_or_blank()) {
-                    editTextDate.text = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
+                    if (editTextDate.text.isNull_or_blank()) {
+                        editTextDate.text =
+                            SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
+                    }
+                    if (editTextTime.text.isNull_or_blank()) {
+                        editTextTime.text =
+                            SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                    }
+                } else {
+                    Toast.makeText(this, "Receipt photo capture cancelled", Toast.LENGTH_SHORT)
+                        .show()
                 }
-                if (editTextTime.text.isNull_or_blank()) {
-                    editTextTime.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
-                }
-            } else {
-                Toast.makeText(this, "Receipt photo capture cancelled", Toast.LENGTH_SHORT).show()
             }
-        }
 
         // Camera Permission Launcher
-        cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                receiptScannerLauncher.launch(Intent(this, ReceiptScannerActivity::class.java))
-            } else {
-                Toast.makeText(this, "Camera permission is required to capture receipts.", Toast.LENGTH_LONG).show()
+        cameraPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted) {
+                    receiptScannerLauncher.launch(Intent(this, ReceiptScannerActivity::class.java))
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Camera permission is required to capture receipts.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
-        }
 
         binding.imageButton20.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.CAMERA
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
                 receiptScannerLauncher.launch(Intent(this, ReceiptScannerActivity::class.java))
             } else {
                 cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
@@ -178,7 +212,12 @@ class AddExpense : AppCompatActivity() {
         binding.spinner2.adapter = spinnerAdapter
 
         binding.spinner2.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 val selectedCategory = parent?.getItemAtPosition(position).toString()
                 if (selectedCategory == "Other" || selectedCategory == "Custom") {
                     customCategoryEditText.visibility = View.VISIBLE
@@ -206,7 +245,8 @@ class AddExpense : AppCompatActivity() {
             }
 
             if (amount <= 0.0) {
-                Toast.makeText(this, "Please enter a valid expense amount", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter a valid expense amount", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
@@ -214,7 +254,8 @@ class AddExpense : AppCompatActivity() {
             val userId = prefs.getInt("USER_ID", -1)
 
             if (userId == -1) {
-                Toast.makeText(this, "User session expired. Please log in.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "User session expired. Please log in.", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
@@ -226,12 +267,17 @@ class AddExpense : AppCompatActivity() {
 
                 if (userBudget == null) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@AddExpense, "Please set a budget goal for $selectedMonth first.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@AddExpense,
+                            "Please set a budget goal for $selectedMonth first.",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                     return@launch
                 }
 
-                val totalExpenses = expenseDao.getTotalExpensesForUserAndMonth(userId, selectedMonth) ?: 0.0
+                val totalExpenses =
+                    expenseDao.getTotalExpensesForUserAndMonth(userId, selectedMonth) ?: 0.0
                 val newTotal = totalExpenses + amount
                 val remaining = userBudget.maxGoal - newTotal
                 val message = if (newTotal > userBudget.maxGoal) {
@@ -241,11 +287,12 @@ class AddExpense : AppCompatActivity() {
                 }
 
                 val categoryDao = db.categoryDao()
-                val categoryName = if ((selectedCategory == "Other" || selectedCategory == "Custom") && customCategoryText.isNotEmpty()) {
-                    customCategoryText
-                } else {
-                    selectedCategory
-                }
+                val categoryName =
+                    if ((selectedCategory == "Other" || selectedCategory == "Custom") && customCategoryText.isNotEmpty()) {
+                        customCategoryText
+                    } else {
+                        selectedCategory
+                    }
 
                 val existing = categoryDao.getCategoryIdByNameAndUserId(categoryName, userId)
                 val categoryId = existing ?: syncRepository.insertCategory(
@@ -286,7 +333,13 @@ class AddExpense : AppCompatActivity() {
                 cal.set(Calendar.MINUTE, minute)
                 editTextTime.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(cal.time)
             }
-            TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
+            TimePickerDialog(
+                this,
+                timeSetListener,
+                cal.get(Calendar.HOUR_OF_DAY),
+                cal.get(Calendar.MINUTE),
+                true
+            ).show()
         }
 
         btnShowDatePicker.setOnClickListener {
@@ -315,17 +368,31 @@ class AddExpense : AppCompatActivity() {
                                 val upper = text.uppercase(Locale.getDefault())
 
                                 // 1. Detect Merchant Name
-                                if (upper.contains("CHECKERS") || upper.contains("SHOPRITE") || upper.contains("PICK N PAY") ||
-                                    upper.contains("WOOLWORTHS") || upper.contains("SPAR") || upper.contains("MAKRO") ||
-                                    upper.contains("DIS-CHEM") || upper.contains("CLICKS") || upper.contains("ENGEN") ||
-                                    upper.contains("SHELL") || upper.contains("TOTAL") || upper.contains("SASOL") || upper.contains("UBER")) {
+                                if (upper.contains("CHECKERS") || upper.contains("SHOPRITE") || upper.contains(
+                                        "PICK N PAY"
+                                    ) ||
+                                    upper.contains("WOOLWORTHS") || upper.contains("SPAR") || upper.contains(
+                                        "MAKRO"
+                                    ) ||
+                                    upper.contains("DIS-CHEM") || upper.contains("CLICKS") || upper.contains(
+                                        "ENGEN"
+                                    ) ||
+                                    upper.contains("SHELL") || upper.contains("TOTAL") || upper.contains(
+                                        "SASOL"
+                                    ) || upper.contains("UBER")
+                                ) {
                                     if (extractedTitle == "Receipt Purchase") {
                                         extractedTitle = text
                                     }
                                 }
 
                                 // 2. Detect Total Amount
-                                if (upper.contains("TOTAL") || upper.contains("TOT") || upper.contains("AMOUNT") || upper.contains("CARD") || upper.contains("CASH") || upper.contains("BALANCE")) {
+                                if (upper.contains("TOTAL") || upper.contains("TOT") || upper.contains(
+                                        "AMOUNT"
+                                    ) || upper.contains("CARD") || upper.contains("CASH") || upper.contains(
+                                        "BALANCE"
+                                    )
+                                ) {
                                     val numbers = Regex("\\d+[.,]\\d{2}").findAll(text)
                                     for (numMatch in numbers) {
                                         val cleanNum = numMatch.value.replace(",", ".")
@@ -337,7 +404,8 @@ class AddExpense : AppCompatActivity() {
                                 }
 
                                 // 3. Detect Date
-                                val dateRegex = Regex("\\d{2}[-/]\\d{2}[-/]\\d{2,4}|\\d{4}[-/]\\d{2}[-/]\\d{2}")
+                                val dateRegex =
+                                    Regex("\\d{2}[-/]\\d{2}[-/]\\d{2,4}|\\d{4}[-/]\\d{2}[-/]\\d{2}")
                                 val dateMatch = dateRegex.find(text)
                                 if (dateMatch != null && extractedDate == null) {
                                     extractedDate = dateMatch.value.replace("-", "/")
@@ -363,7 +431,9 @@ class AddExpense : AppCompatActivity() {
 
                     // Fallback title: first meaningful line
                     if (extractedTitle == "Receipt Purchase") {
-                        val firstValidLine = lines.firstOrNull { it.length > 3 && !it.contains("TEL") && !it.contains("VAT") }
+                        val firstValidLine = lines.firstOrNull {
+                            it.length > 3 && !it.contains("TEL") && !it.contains("VAT")
+                        }
                         if (firstValidLine != null) {
                             extractedTitle = firstValidLine
                         }
@@ -382,7 +452,13 @@ class AddExpense : AppCompatActivity() {
                             if (!extractedDate.isNullOrBlank()) {
                                 editTextDate.text = extractedDate
                             }
-                            binding.editTextText4.setText("AI Analyzed ($detectedCategory): ${lines.take(2).joinToString(" • ")}")
+                            binding.editTextText4.setText(
+                                "AI Analyzed ($detectedCategory): ${
+                                    lines.take(
+                                        2
+                                    ).joinToString(" • ")
+                                }"
+                            )
 
                             // Select category in spinner safely
                             val adapter = binding.spinner2.adapter
@@ -396,7 +472,11 @@ class AddExpense : AppCompatActivity() {
                                 }
                             }
 
-                            Toast.makeText(this, "AI OCR: Classified as $detectedCategory (R${extractedAmount ?: 0.0})", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this,
+                                "AI OCR: Classified as $detectedCategory (R${extractedAmount ?: 0.0})",
+                                Toast.LENGTH_LONG
+                            ).show()
                         } catch (e: Exception) {
                             Log.e("ReceiptOCR", "UI update error", e)
                         }
@@ -405,7 +485,11 @@ class AddExpense : AppCompatActivity() {
                 .addOnFailureListener { e: Exception ->
                     Log.e("ReceiptOCR", "OCR failed", e)
                     runOnUiThread {
-                        Toast.makeText(this, "AI OCR could not read text. Please enter details manually.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "AI OCR could not read text. Please enter details manually.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
         } catch (e: Exception) {
@@ -416,13 +500,107 @@ class AddExpense : AppCompatActivity() {
     private fun detectCategoryFromText(text: String): String {
         val lower = text.lowercase(Locale.getDefault())
         return when {
-            listOf("food", "restaurant", "cafe", "grocery", "market", "supermarket", "coffee", "burger", "pizza", "nando", "kfc", "mcdonald", "shoprite", "checkers", "pick n pay", "woolworths", "spar", "makro", "bakery", "meat", "produce").any { lower.contains(it) } -> "Food"
-            listOf("uber", "bolt", "petrol", "fuel", "parking", "shell", "bp", "engen", "total", "sasol", "taxi", "bus", "train", "transport", "car").any { lower.contains(it) } -> "Transport"
-            listOf("mall", "store", "clothing", "fashion", "shoes", "zara", "nike", "edgars", "mr price", "shopping", "retail").any { lower.contains(it) } -> "Shopping"
-            listOf("electricity", "water", "municipal", "eskom", "wifi", "fiber", "vodacom", "mtn", "telkom", "utility", "bill", "payment").any { lower.contains(it) } -> "Bills"
-            listOf("pharmacy", "clicks", "dis-chem", "doctor", "hospital", "medicine", "health", "clinic").any { lower.contains(it) } -> "Health"
-            listOf("cinema", "movie", "game", "spotify", "dstv", "entertainment", "ticket").any { lower.contains(it) } -> "Entertainment"
-            listOf("hotel", "flight", "booking", "airbnb", "travel", "holiday").any { lower.contains(it) } -> "Travel"
+            listOf(
+                "food",
+                "restaurant",
+                "cafe",
+                "grocery",
+                "market",
+                "supermarket",
+                "coffee",
+                "burger",
+                "pizza",
+                "nando",
+                "kfc",
+                "mcdonald",
+                "shoprite",
+                "checkers",
+                "pick n pay",
+                "woolworths",
+                "spar",
+                "makro",
+                "bakery",
+                "meat",
+                "produce"
+            ).any { lower.contains(it) } -> "Food"
+
+            listOf(
+                "uber",
+                "bolt",
+                "petrol",
+                "fuel",
+                "parking",
+                "shell",
+                "bp",
+                "engen",
+                "total",
+                "sasol",
+                "taxi",
+                "bus",
+                "train",
+                "transport",
+                "car"
+            ).any { lower.contains(it) } -> "Transport"
+
+            listOf(
+                "mall",
+                "store",
+                "clothing",
+                "fashion",
+                "shoes",
+                "zara",
+                "nike",
+                "edgars",
+                "mr price",
+                "shopping",
+                "retail"
+            ).any { lower.contains(it) } -> "Shopping"
+
+            listOf(
+                "electricity",
+                "water",
+                "municipal",
+                "eskom",
+                "wifi",
+                "fiber",
+                "vodacom",
+                "mtn",
+                "telkom",
+                "utility",
+                "bill",
+                "payment"
+            ).any { lower.contains(it) } -> "Bills"
+
+            listOf(
+                "pharmacy",
+                "clicks",
+                "dis-chem",
+                "doctor",
+                "hospital",
+                "medicine",
+                "health",
+                "clinic"
+            ).any { lower.contains(it) } -> "Health"
+
+            listOf(
+                "cinema",
+                "movie",
+                "game",
+                "spotify",
+                "dstv",
+                "entertainment",
+                "ticket"
+            ).any { lower.contains(it) } -> "Entertainment"
+
+            listOf(
+                "hotel",
+                "flight",
+                "booking",
+                "airbnb",
+                "travel",
+                "holiday"
+            ).any { lower.contains(it) } -> "Travel"
+
             else -> "Other"
         }
     }
@@ -434,7 +612,8 @@ class AddExpense : AppCompatActivity() {
             takePictureLauncher.launch(uri)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "Failed to initialize camera: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to initialize camera: ${e.message}", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -466,15 +645,18 @@ class AddExpense : AppCompatActivity() {
     }
 
     private fun showDatePicker() {
-        val datePickerDialog = DatePickerDialog(this, { _, year, month, day ->
-            val selectedDate = Calendar.getInstance()
-            selectedDate.set(year, month, day)
-            val formatted = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(selectedDate.time)
-            editTextDate.text = formatted
-        },
+        val datePickerDialog = DatePickerDialog(
+            this, { _, year, month, day ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(year, month, day)
+                val formatted =
+                    SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(selectedDate.time)
+                editTextDate.text = formatted
+            },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH))
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
         datePickerDialog.show()
     }
 
