@@ -18,4 +18,11 @@
         <item>Gift / Bonus</item>
         <item>Other</item>
     </string-array>
+
+    <string-array name="income_frequencies_array">
+        <item>Monthly</item>
+        <item>One-Time</item>
+        <item>Weekly</item>
+        <item>Bi-Weekly</item>
+    </string-array>
 </resources>

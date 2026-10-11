@@ -19,7 +19,6 @@ class ExploreMoreActivity : AppCompatActivity() {
 
     private lateinit var tipTextView: TextView
     private lateinit var btnNextTip: Button
-    private lateinit var btnRefreshInsights: Button
 
     private val realTimeTipsList = mutableListOf<String>()
     private var currentIndex = 0
@@ -40,7 +39,6 @@ class ExploreMoreActivity : AppCompatActivity() {
 
         tipTextView = findViewById(R.id.text_ai_advice)
         btnNextTip = findViewById(R.id.btnNextTip)
-        btnRefreshInsights = findViewById(R.id.btnRefreshInsights)
 
         val backButton = findViewById<ImageButton>(R.id.button_Back)
         backButton.setOnClickListener {
@@ -49,10 +47,6 @@ class ExploreMoreActivity : AppCompatActivity() {
 
         btnNextTip.setOnClickListener {
             showNextTip()
-        }
-
-        btnRefreshInsights.setOnClickListener {
-            loadRealTimeDatabaseInsights()
         }
 
         loadRealTimeDatabaseInsights()

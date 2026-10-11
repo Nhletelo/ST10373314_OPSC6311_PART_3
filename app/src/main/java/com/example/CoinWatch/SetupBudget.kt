@@ -8,7 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.CoinWatch.data.AppDatabase
 import com.example.CoinWatch.data.BudgetGoal
 import com.example.CoinWatch.data.BudgetGoalDao
+import com.example.CoinWatch.data.Income
 import com.example.CoinWatch.data.SyncRepository
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -101,6 +104,15 @@ class SetupBudget : AppCompatActivity() {
                         maxGoal = maxGoal
                     )
 
+                    val currentDate = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
+                    val incomeRecord = Income(
+                        user_id = userId,
+                        title = "Monthly Income ($selectedMonth)",
+                        amount = income,
+                        date = currentDate
+                    )
+
+                    syncRepository.insertIncome(incomeRecord)
                     syncRepository.insertBudgetGoal(goal)
                     syncRepository.syncPendingData()
 
