@@ -20,9 +20,8 @@ import androidx.room.PrimaryKey
 data class BudgetGoal(
     @PrimaryKey(autoGenerate = true) val goal_id: Int = 0,
     @ColumnInfo(name = "user_id") val user_id: Int,
-    @ColumnInfo(name = "month") val month: String, // NEW
-    //@ColumnInfo(name = "budget_amount") val budgetAmount: Double, // Optional field
+    @ColumnInfo(name = "month") val month: String,
     @ColumnInfo(name = "min_goal") val minGoal: Double,
-    @ColumnInfo(name = "max_goal") val maxGoal: Double
+    @ColumnInfo(name = "max_goal") val maxGoal: Double,
+    @ColumnInfo(name = "is_synced") val isSynced: Boolean = false
 )
-

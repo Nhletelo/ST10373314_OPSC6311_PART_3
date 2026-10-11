@@ -1,142 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_background"
     tools:context=".SetupBudget">
 
-    <EditText
-        android:id="@+id/editTextMaxGoal"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="84dp"
-        android:backgroundTint="#FCF5FD"
-        android:ems="10"
-        android:fontFamily="@font/poppins"
-        android:hint="Maximum Budget"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView31" />
-
-    <TextView
-        android:id="@+id/textView30"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="39dp"
-        android:layout_marginEnd="76dp"
-        android:fontFamily="@font/poppins"
-        android:text="Enter Minimum Budget Goal"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
-
-    <EditText
-        android:id="@+id/editTextMinGoal"
-        android:layout_width="259dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="92dp"
-        android:backgroundTint="#FCF5FD"
-        android:ems="10"
-        android:hint="Minimum Budget"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView30" />
-
-    <Spinner
-        android:id="@+id/spinner_month"
+    <!-- Header Toolbar -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="24dp"
-        android:autofillHints="Select a month"
-        android:entries="@array/months_array"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextMaxGoal" />
-
-    <TextView
-        android:id="@+id/textView31"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="72dp"
-        android:fontFamily="@font/poppins"
-        android:text="Enter Maximum Budget Goal"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextMinGoal" />
-
-    <TextView
-        android:id="@+id/textView15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
-        android:fontFamily="@font/poppins_semibold"
-        android:text="Create Budget"
-        android:textSize="25sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/imageButton25"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="48dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Go back"
-        android:minWidth="48dp"
-        android:minHeight="48dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="36dp"
+        android:paddingBottom="12dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_arrow_back_24" />
-
-
-    <Button
-        android:id="@+id/button11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="162dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="162dp"
-        android:backgroundTint="#000000"
-        android:text="Reset"
-        android:textColor="#FCF5FD"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSaveBudget" />
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <ImageButton
+            android:id="@+id/imageButton25"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Go back"
+            app:srcCompat="@drawable/baseline_arrow_back_24" />
 
-    <Button
-        android:id="@+id/btnSaveBudget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="156dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="156dp"
-        android:backgroundTint="#0446FD"
-        android:text="SUBMIT"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Create &amp; Setup Budget"
+            android:fontFamily="@font/poppins_bold"
+            android:textSize="22sp"
+            android:textColor="@color/text_primary"
+            android:gravity="center_vertical"
+            android:layout_marginStart="12dp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_month" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="136dp"
-        android:layout_height="130dp"
-        android:layout_marginStart="138dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="138dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView15"
-        app:srcCompat="@drawable/financial_goals" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:contentDescription="Financial Goals"
+                app:srcCompat="@drawable/financial_goals" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="@color/surface"
+                app:strokeColor="@color/card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="💡 Set your monthly income and budget limits to automatically track savings and calculate your safe-to-spend balance."
+                        android:fontFamily="@font/poppins"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="16dp" />
+
+                    <!-- Monthly Income Input -->
+                    <TextView
+                        android:id="@+id/tvIncomeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Monthly Income (R)"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textSize="14sp"
+                        android:textColor="@color/primary" />
+
+                    <EditText
+                        android:id="@+id/editTextIncome"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/input_bg"
+                        android:hint="Enter monthly income (e.g. 15000)"
+                        android:inputType="numberDecimal"
+                        android:padding="12dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp" />
+
+                    <!-- Month Selection -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select Month"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginTop="16dp" />
+
+                    <Spinner
+                        android:id="@+id/spinner_month"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/input_bg"
+                        android:entries="@array/months_array" />
+
+                    <!-- Min Goal -->
+                    <TextView
+                        android:id="@+id/textView30"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Minimum Budget Goal (R)"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginTop="16dp" />
+
+                    <EditText
+                        android:id="@+id/editTextMinGoal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/input_bg"
+                        android:hint="Enter minimum goal"
+                        android:inputType="numberDecimal"
+                        android:padding="12dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp" />
+
+                    <!-- Max Goal -->
+                    <TextView
+                        android:id="@+id/textView31"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Maximum Budget Goal (R)"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginTop="16dp" />
+
+                    <EditText
+                        android:id="@+id/editTextMaxGoal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/input_bg"
+                        android:hint="Enter maximum goal"
+                        android:inputType="numberDecimal"
+                        android:padding="12dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp" />
+
+                    <!-- Buttons -->
+                    <Button
+                        android:id="@+id/btnSaveBudget"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="24dp"
+                        android:backgroundTint="@color/primary"
+                        android:text="Save Budget &amp; Income"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        app:cornerRadius="12dp" />
+
+                    <Button
+                        android:id="@+id/button11"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="#64748B"
+                        android:text="Reset Fields"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        app:cornerRadius="12dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

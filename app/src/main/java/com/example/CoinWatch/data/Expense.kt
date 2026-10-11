@@ -31,13 +31,14 @@ data class Expense(
     @PrimaryKey(autoGenerate = true) val expense_id: Int = 0,
     @ColumnInfo(name = "date") val date: String, // Format: YYYY-MM-DD
     @ColumnInfo(name = "start_time") val startTime: String?,
-    @ColumnInfo(name = "title") val title:String?,
+    @ColumnInfo(name = "title") val title: String?,
     @ColumnInfo(name = "description") val description: String?,
     @ColumnInfo(name = "amount") val amount: Double,
     @ColumnInfo(name = "photo_path") val photoPath: String?,
     @ColumnInfo(name = "file_path") val filePath: String?,
     @ColumnInfo(name = "category_id") val category_id: Int?,
-    @ColumnInfo(name = "user_id") val user_id: Int
+    @ColumnInfo(name = "user_id") val user_id: Int,
+    @ColumnInfo(name = "is_synced") val isSynced: Boolean = false
 )
 
 data class ExpenseWithCategory(

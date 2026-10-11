@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
-//Dao
 @Dao
 interface CategoryDao {
     @Query("SELECT * FROM categories WHERE user_id = :userId")
@@ -23,5 +22,10 @@ interface CategoryDao {
 
     @Delete
     suspend fun deleteCategory(category: Category)
-}
 
+    @Query("SELECT * FROM categories WHERE is_synced = 0")
+    suspend fun getUnsyncedCategories(): List<Category>
+
+    @Query("UPDATE categories SET is_synced = 1 WHERE category_id = :categoryId")
+    suspend fun markCategorySynced(categoryId: Int)
+}

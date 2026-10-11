@@ -13,6 +13,8 @@ class GamificationActivity : AppCompatActivity() {
     private lateinit var btnSubmit: Button
     private lateinit var ivBadge: ImageView
     private lateinit var tvLevel: TextView
+    private lateinit var progressBarQuiz: ProgressBar
+    private lateinit var tvProgressLabel: TextView
 
     private var currentPoints = 0
     private var currentQuestionIndex = 0
@@ -34,69 +36,96 @@ class GamificationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gamification)
 
+        findViewById<ImageButton>(R.id.btnBackGame).setOnClickListener {
+            finish()
+        }
+
         tvPoints = findViewById(R.id.tvPoints)
         tvQuestion = findViewById(R.id.tvQuestion)
         rgOptions = findViewById(R.id.rgOptions)
         btnSubmit = findViewById(R.id.btnSubmit)
         ivBadge = findViewById(R.id.ivBadge)
         tvLevel = findViewById(R.id.tvLevel)
+        progressBarQuiz = findViewById(R.id.progressBarQuiz)
+        tvProgressLabel = findViewById(R.id.tvProgressLabel)
 
         currentPoints = getPointsFromPrefs()
         updatePointsDisplay()
+        updateBadgeAndLevel()
         loadQuestion()
 
         btnSubmit.setOnClickListener {
+            if (btnSubmit.text.toString() == "Play Again") {
+                currentQuestionIndex = 0
+                btnSubmit.text = "Submit Answer"
+                loadQuestion()
+                return@setOnClickListener
+            }
+
             val selectedId = rgOptions.checkedRadioButtonId
             if (selectedId == -1) {
                 Toast.makeText(this, "Please select an answer", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val selectedIndex = rgOptions.indexOfChild(findViewById(selectedId))
-            checkAnswer(selectedIndex)
+            val selectedIndex = when (selectedId) {
+                R.id.rbOption1 -> 0
+                R.id.rbOption2 -> 1
+                R.id.rbOption3 -> 2
+                R.id.rbOption4 -> 3
+                else -> -1
+            }
+
+            if (selectedIndex != -1) {
+                checkAnswer(selectedIndex)
+            }
         }
     }
 
     private fun loadQuestion() {
         if (currentQuestionIndex >= questions.size) {
-            // Quiz finished, no more questions to load
             return
         }
 
         val question = questions[currentQuestionIndex]
         tvQuestion.text = question.question
+        tvProgressLabel.text = "Question ${currentQuestionIndex + 1} of ${questions.size}"
+        progressBarQuiz.progress = ((currentQuestionIndex + 1).toFloat() / questions.size * 100).toInt()
 
         for (i in 0 until rgOptions.childCount) {
             val rb = rgOptions.getChildAt(i) as RadioButton
-            rb.text = question.options[i]
+            if (i < question.options.size) {
+                rb.text = question.options[i]
+                rb.visibility = android.view.View.VISIBLE
+            } else {
+                rb.visibility = android.view.View.GONE
+            }
         }
 
         rgOptions.clearCheck()
-
-        // Clear badge and level while quiz is in progress
-        ivBadge.setImageResource(R.drawable.badge_none)
-        tvLevel.text = ""
     }
 
     private fun checkAnswer(selectedIndex: Int) {
         val correctIndex = questions[currentQuestionIndex].correctAnswerIndex
         if (selectedIndex == correctIndex) {
             currentPoints += 10
-            Toast.makeText(this, "Correct! +10 points", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Correct! +10 points 🎉", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Wrong answer", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Incorrect. The correct answer was: ${questions[currentQuestionIndex].options[correctIndex]}", Toast.LENGTH_LONG).show()
         }
 
         savePointsToPrefs(currentPoints)
         updatePointsDisplay()
+        updateBadgeAndLevel()
 
         currentQuestionIndex++
 
         if (currentQuestionIndex >= questions.size) {
-            // Quiz finished
-            btnSubmit.isEnabled = false
-            Toast.makeText(this, "Quiz finished! You earned $currentPoints points.", Toast.LENGTH_LONG).show()
-            updateBadgeAndLevel()
+            btnSubmit.text = "Play Again"
+            tvQuestion.text = "🏆 Quiz Completed! You scored $currentPoints total points."
+            tvProgressLabel.text = "Completed"
+            progressBarQuiz.progress = 100
+            Toast.makeText(this, "Quiz finished! Great job!", Toast.LENGTH_LONG).show()
         } else {
             loadQuestion()
         }
@@ -125,10 +154,10 @@ class GamificationActivity : AppCompatActivity() {
 
     private fun getLevel(points: Int): String {
         return when {
-            points >= 100 -> "Gold"
-            points >= 60 -> "Silver"
-            points >= 30 -> "Bronze"
-            else -> "No Level"
+            points >= 100 -> "Financial Master (Gold)"
+            points >= 60 -> "Budget Expert (Silver)"
+            points >= 30 -> "Saver (Bronze)"
+            else -> "Beginner"
         }
     }
 

@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.CoinWatch.data.AppDatabase
+import com.example.CoinWatch.data.SyncRepository
 import com.example.CoinWatch.data.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,27 +17,36 @@ import java.security.MessageDigest
 
 class SignUp : AppCompatActivity() {
     private lateinit var db: AppDatabase
+    private lateinit var syncRepository: SyncRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
         db = AppDatabase.getDatabase(this)
+        syncRepository = SyncRepository(this)
 
         val btnSignup = findViewById<Button>(R.id.button2)
         val goBackButton = findViewById<ImageButton>(R.id.imageButton2)
 
         btnSignup.setOnClickListener {
             val editTextUsername = findViewById<EditText>(R.id.editTextText)
+            val editTextEmail = findViewById<EditText>(R.id.editTextEmail)
             val editTextPassword = findViewById<EditText>(R.id.editTextTextPassword2)
             val editConfirmPassword = findViewById<EditText>(R.id.editTextTextPassword3)
 
             val username = editTextUsername.text.toString().trim()
+            val email = editTextEmail.text.toString().trim()
             val password = editTextPassword.text.toString()
             val confirmPassword = editConfirmPassword.text.toString()
 
             if (username.isEmpty()) {
                 editTextUsername.error = "Username cannot be empty"
+                return@setOnClickListener
+            }
+
+            if (email.isEmpty() || !email.contains("@")) {
+                editTextEmail.error = "Please enter a valid email address"
                 return@setOnClickListener
             }
 
@@ -56,15 +66,16 @@ class SignUp : AppCompatActivity() {
             }
 
             CoroutineScope(Dispatchers.IO).launch {
-                val existingUser = db.userDao().getUserByUsername(username)
+                val existingUser = db.userDao().getUserByEmail(email)
                 if (existingUser != null) {
                     runOnUiThread {
-                        Toast.makeText(this@SignUp, "Username already exists", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@SignUp, "Email already exists", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     val hashedPassword = hashPassword(password)
-                    val newUser = User(username = username, password = hashedPassword)
-                    db.userDao().insertUser(newUser)
+                    val newUser = User(username = username, email = email, password = hashedPassword)
+                    syncRepository.insertUser(newUser)
+                    syncRepository.syncPendingData()
 
                     runOnUiThread {
                         Toast.makeText(this@SignUp, "Account created successfully", Toast.LENGTH_SHORT).show()

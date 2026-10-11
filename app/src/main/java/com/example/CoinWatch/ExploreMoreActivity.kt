@@ -2,63 +2,35 @@ package com.example.CoinWatch
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.CoinWatch.data.AppDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ExploreMoreActivity : AppCompatActivity() {
 
     private lateinit var tipTextView: TextView
+    private lateinit var btnNextTip: Button
+    private lateinit var btnRefreshInsights: Button
+
+    private val realTimeTipsList = mutableListOf<String>()
     private var currentIndex = 0
 
-    private val challengeTips = listOf(
-        Pair(
-            "Challenge: Overspending on eating out and takeout.",
-            "Tip: Try meal prepping for the week to save money and eat healthier."
-        ),
-        Pair(
-            "Challenge: Impulse purchases leading to budget blowouts.",
-            "Tip: Wait 24 hours before buying to avoid impulsive spending."
-        ),
-        Pair(
-            "Challenge: Difficulty tracking daily expenses.",
-            "Tip: Use CoinWatch to log every expense daily and review weekly reports."
-        ),
-        Pair(
-            "Challenge: Frequent credit card debt accumulation.",
-            "Tip: Use cash envelopes for discretionary spending to stay within limits."
-        ),
-        Pair(
-            "Challenge: Overlooking small, frequent purchases that add up.",
-            "Tip: Use the 'Round-Up' feature in CoinWatch to save spare change automatically."
-        ),
-        Pair(
-            "Challenge: Falling victim to marketing emails and ads.",
-            "Tip: Unsubscribe from promotional emails and avoid browsing shopping sites unnecessarily."
-        ),
-        Pair(
-            "Challenge: Struggling to save regularly.",
-            "Tip: Set automatic monthly savings in CoinWatch and treat savings like a bill to pay first."
-        ),
-        Pair(
-            "Challenge: No clear budget categories leading to overspending.",
-            "Tip: Create clear spending limits in CoinWatch for each category and stick to them."
-        ),
-        Pair(
-            "Challenge: Weekend splurges ruining monthly budgets.",
-            "Tip: Take on the 'No-Spend Weekend' challenge to reset your spending habits."
-        ),
-        Pair(
-            "Challenge: Forgetting financial goals.",
-            "Tip: Set and review your monthly goals in CoinWatch regularly to stay motivated."
-        )
-    )
-
-    private val handler = Handler()
-    private val runnable = object : Runnable {
+    private val handler = Handler(Looper.getMainLooper())
+    private val autoCycleRunnable = object : Runnable {
         override fun run() {
-            showNextChallengeTip()
-            handler.postDelayed(this, 10_000) // every 10 seconds
+            if (realTimeTipsList.isNotEmpty()) {
+                showNextTip()
+            }
+            handler.postDelayed(this, 10_000) // Every 10 seconds
         }
     }
 
@@ -67,24 +39,124 @@ class ExploreMoreActivity : AppCompatActivity() {
         setContentView(R.layout.activity_explore_more)
 
         tipTextView = findViewById(R.id.text_ai_advice)
-        val backButton = findViewById<Button>(R.id.button_Back)
+        btnNextTip = findViewById(R.id.btnNextTip)
+        btnRefreshInsights = findViewById(R.id.btnRefreshInsights)
 
+        val backButton = findViewById<ImageButton>(R.id.button_Back)
         backButton.setOnClickListener {
             finish()
         }
 
-        showNextChallengeTip()
-        handler.postDelayed(runnable, 10_000)
+        btnNextTip.setOnClickListener {
+            showNextTip()
+        }
+
+        btnRefreshInsights.setOnClickListener {
+            loadRealTimeDatabaseInsights()
+        }
+
+        loadRealTimeDatabaseInsights()
+        handler.postDelayed(autoCycleRunnable, 10_000)
     }
 
-    private fun showNextChallengeTip() {
-        val (challenge, tip) = challengeTips[currentIndex]
-        tipTextView.text = "🔥 Challenge:\n$challenge\n\n💡 CoinWatch Tip:\n$tip"
-        currentIndex = (currentIndex + 1) % challengeTips.size
+    private fun loadRealTimeDatabaseInsights() {
+        tipTextView.text = "⚡ Analyzing your real-time expense data..."
+
+        val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val userId = prefs.getInt("USER_ID", -1)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val db = AppDatabase.getDatabase(applicationContext)
+            val expenseDao = db.expenseDao()
+            val budgetDao = db.budgetGoalDao()
+
+            val currentMonth = SimpleDateFormat("MMMM", Locale.getDefault()).format(Date())
+            val expenses = expenseDao.getExpensesByUser(userId)
+            val categoryTotals = expenseDao.getTotalExpensesByCategory(userId)
+            val totalSpent = expenseDao.getTotalSpentByUser(userId) ?: 0.0
+            val userBudget = budgetDao.getBudgetForUserAndMonth(userId, currentMonth)
+
+            val generatedTips = mutableListOf<String>()
+
+            // 1. Real-time Top Category Insight
+            if (categoryTotals.isNotEmpty()) {
+                val topCategory = categoryTotals.maxByOrNull { it.total }
+                if (topCategory != null && topCategory.total > 0) {
+                    generatedTips.add(
+                        "📊 REAL-TIME ANALYSIS:\nYour highest spending category is ${topCategory.category_name} (R${"%.2f".format(topCategory.total)}).\n\n💡 Tip: Cooking 2 more meals at home or reducing non-essential ${topCategory.category_name} buys could save you over R300/month!"
+                    )
+                }
+            }
+
+            // 2. Real-time Budget Usage Alert
+            if (userBudget != null && userBudget.maxGoal > 0) {
+                val percentUsed = (totalSpent / userBudget.maxGoal) * 100
+                val formattedPercent = "%.1f".format(percentUsed)
+                val formattedSpent = "%.2f".format(totalSpent)
+                val formattedBudget = "%.2f".format(userBudget.maxGoal)
+
+                if (percentUsed >= 90) {
+                    generatedTips.add(
+                        "🚨 REAL-TIME BUDGET WARNING:\nYou have spent $formattedPercent% of your monthly budget (R$formattedSpent / R$formattedBudget).\n\n💡 Tip: Hold off on non-essential purchases for the rest of $currentMonth to stay within budget!"
+                    )
+                } else if (percentUsed >= 50) {
+                    generatedTips.add(
+                        "📈 REAL-TIME BUDGET UPDATE:\nYou've used $formattedPercent% of your $currentMonth budget (R$formattedSpent / R$formattedBudget).\n\n💡 Tip: Try taking on a '3-Day No-Spend Challenge' this week to preserve your remaining goal!"
+                    )
+                } else {
+                    generatedTips.add(
+                        "✅ REAL-TIME BUDGET STATUS:\nYou are doing great! You've used $formattedPercent% of your monthly budget (R$formattedSpent / R$formattedBudget).\n\n💡 Tip: Deposit any leftover cash into savings at the end of the month!"
+                    )
+                }
+            }
+
+            // 3. Real-time Transaction Count & Frequency
+            if (expenses.isNotEmpty()) {
+                val totalCount = expenses.size
+                val smallTxCount = expenses.count { it.expense.amount in 1.0..50.0 }
+                generatedTips.add(
+                    "⚡ REAL-TIME SPENDING HABIT:\nYou have logged $totalCount transactions ($smallTxCount micro-purchases under R50).\n\n💡 Tip: Small daily buys (< R50) often accumulate to over R400/month. Keep tracking every transaction!"
+                )
+            } else {
+                generatedTips.add(
+                    "💡 REAL-TIME TIP:\nNo transactions logged yet this month! Start by adding your daily transport or grocery expense to see live spending analytics."
+                )
+            }
+
+            // General Money Saving Hacks
+            generatedTips.add(
+                "⏳ 24-HOUR RULE:\nBefore making non-essential buys over R200, wait 24 hours. Most impulse urges fade away!"
+            )
+            generatedTips.add(
+                "☕ COFFEE & TAKEOUT HACK:\nMaking coffee or tea at home saves approx. R30 daily — that adds up to R900 back in your pocket every month!"
+            )
+            generatedTips.add(
+                "📱 SUBSCRIPTION CLEANUP:\nAudit streaming or app subscriptions. Cancel any service you haven't used in 30 days to free up cash immediately."
+            )
+
+            withContext(Dispatchers.Main) {
+                realTimeTipsList.clear()
+                realTimeTipsList.addAll(generatedTips)
+                currentIndex = 0
+                showCurrentTip()
+            }
+        }
+    }
+
+    private fun showNextTip() {
+        if (realTimeTipsList.isEmpty()) return
+        currentIndex = (currentIndex + 1) % realTimeTipsList.size
+        showCurrentTip()
+    }
+
+    private fun showCurrentTip() {
+        if (realTimeTipsList.isNotEmpty() && currentIndex in realTimeTipsList.indices) {
+            tipTextView.text = realTimeTipsList[currentIndex]
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(runnable)
+        handler.removeCallbacks(autoCycleRunnable)
     }
 }

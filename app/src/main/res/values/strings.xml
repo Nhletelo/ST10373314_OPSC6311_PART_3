@@ -60,4 +60,12 @@
 
     <string name="title_activity_settings">SettingsActivity</string>
 
+    <!-- ATM Locator Strings -->
+    <string name="find_nearby_atms">Find Nearby ATMs</string>
+    <string name="search_suburb_hint">Search suburb, city or area...</string>
+    <string name="filter_247_only">24/7 Only</string>
+    <string name="filter_247_desc">Filter 24/7 Access</string>
+    <string name="close_details">Close details</string>
+    <string name="get_directions">Get Directions</string>
+
 </resources>

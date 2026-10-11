@@ -5,34 +5,38 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.CoinWatch.data.AppDatabase
-import com.example.CoinWatch.data.UserDao
+import com.example.CoinWatch.data.SyncRepository
 import kotlinx.coroutines.launch
 import java.security.MessageDigest
 
 class Login : AppCompatActivity() {
-    private lateinit var userDao: UserDao
+    private lateinit var syncRepository: SyncRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val db = AppDatabase.getDatabase(this)
-        userDao = db.userDao()
+        syncRepository = SyncRepository(this)
 
         val btnLogin = findViewById<Button>(R.id.button)
-        val usernameField = findViewById<EditText>(R.id.editTextText2)
+        val emailField = findViewById<EditText>(R.id.editTextEmailLogin)
         val passwordField = findViewById<EditText>(R.id.editTextTextPassword)
         val goBackButton = findViewById<ImageButton>(R.id.imageButton)
+        val tvForgotPassword = findViewById<TextView>(R.id.tvForgotPassword)
+
+        tvForgotPassword.setOnClickListener {
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
+        }
 
         btnLogin.setOnClickListener {
-            val username = usernameField.text.toString().trim()
+            val email = emailField.text.toString().trim()
             val password = passwordField.text.toString()
 
-            if (username.isEmpty() || password.isEmpty()) {
+            if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please enter both fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -40,18 +44,21 @@ class Login : AppCompatActivity() {
             val hashedPassword = hashPassword(password)
 
             lifecycleScope.launch {
-                val user = userDao.login(username, hashedPassword)
+                val user = syncRepository.loginAndSyncUserByEmail(email, hashedPassword)
                 if (user != null) {
                     val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-                    prefs.edit().putInt("USER_ID", user.user_id).apply()
+                    prefs.edit()
+                        .putInt("USER_ID", user.user_id)
+                        .putString("username", user.username)
+                        .apply()
 
                     val intent = Intent(this@Login, HomeScreen::class.java)
-                    intent.putExtra("username", username)
+                    intent.putExtra("username", user.username)
                     startActivity(intent)
                     finish()
                 } else {
                     runOnUiThread {
-                        Toast.makeText(this@Login, "Invalid username or password", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@Login, "Invalid email or password", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

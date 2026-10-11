@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.CoinWatch.data.AppDatabase
+import com.example.CoinWatch.data.SyncRepository
 import com.example.CoinWatch.databinding.ActivityEditTransactionBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,11 +18,15 @@ class EditTransactionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditTransactionBinding
     private var expenseId: Int = -1
     private lateinit var db: AppDatabase
+    private lateinit var syncRepository: SyncRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditTransactionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        db = AppDatabase.getDatabase(this)
+        syncRepository = SyncRepository(this)
 
         val btnBack = findViewById<ImageButton>(R.id.imageButton26)
         btnBack.setOnClickListener {
@@ -29,7 +34,6 @@ class EditTransactionActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        db = AppDatabase.getDatabase(this)
         expenseId = intent.getIntExtra("expense_id", -1)
 
         if (expenseId != -1) {
@@ -76,10 +80,11 @@ class EditTransactionActivity : AppCompatActivity() {
                     date = updatedDate,
                     startTime = updatedTime
                 )
-                db.expenseDao().updateExpense(updatedExpense)
+                syncRepository.updateExpense(updatedExpense)
+                syncRepository.syncPendingData()
 
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@EditTransactionActivity, "Expense updated", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@EditTransactionActivity, "Expense updated & synced", Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }

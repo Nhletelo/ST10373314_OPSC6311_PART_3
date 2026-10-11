@@ -1,48 +1,309 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    tools:context=".ExploreMoreActivity">
 
+    <!-- Header Toolbar -->
     <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="36dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Explore Monthly Goals and Challenges"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Welcome to CoinWatch – your smart financial partner. CoinWatch is designed to help you track your income, monitor expenses, set monthly savings goals, and stay on top of your financial health. Our goal is to turn good money habits into a lifestyle."
-            android:textSize="16sp"
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:id="@+id/text_ai_advice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Loading tips..."
-            android:textSize="18sp"
-            android:textStyle="italic"
-            android:padding="16dp"
-            android:layout_marginBottom="24dp"
-            android:background="#EFEFEF"
-
-            android:minHeight="120dp" />
-
-        <Button
+        <ImageButton
             android:id="@+id/button_Back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="⬅️ Back" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            app:srcCompat="@drawable/baseline_arrow_back_24" />
 
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Real-Time Money Saving Tips"
+            android:fontFamily="@font/poppins_bold"
+            android:textSize="20sp"
+            android:textColor="@color/text_primary"
+            android:gravity="center_vertical"
+            android:layout_marginStart="12dp" />
     </LinearLayout>
-</ScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Real-Time Dynamic Insight Banner Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardLiveTip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/primary"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="⚡ LIVE SPENDING INSIGHT"
+                            android:fontFamily="@font/poppins_bold"
+                            android:textColor="#FEBE10"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tvLiveStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="REAL-TIME"
+                            android:fontFamily="@font/poppins_bold"
+                            android:textColor="#10B981"
+                            android:textSize="11sp"
+                            android:background="#1A10B981"
+                            android:paddingHorizontal="8dp"
+                            android:paddingVertical="2dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/text_ai_advice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Analyzing your real-time expense database..."
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:layout_marginTop="12dp"
+                        android:minHeight="80dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp">
+
+                        <Button
+                            android:id="@+id/btnNextTip"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#FEBE10"
+                            android:textColor="#000000"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:text="Next Tip"
+                            android:textSize="13sp"
+                            app:cornerRadius="10dp" />
+
+                        <Button
+                            android:id="@+id/btnRefreshInsights"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="10dp"
+                            android:backgroundTint="#2C3859"
+                            android:textColor="#FFFFFF"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="Re-Analyze"
+                            android:textSize="13sp"
+                            app:cornerRadius="10dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Curated Money Saving Hacks"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="18sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginVertical="8dp" />
+
+            <!-- Tip Item 1 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/surface"
+                app:strokeColor="@color/card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🍔 Food &amp; Dining Out"
+                        android:fontFamily="@font/poppins_bold"
+                        android:textColor="@color/primary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Meal prep twice a week and make coffee at home. Saving just R30 on coffee daily saves R900 per month!"
+                        android:fontFamily="@font/poppins"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tip Item 2 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/surface"
+                app:strokeColor="@color/card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⏳ The 24-Hour Rule"
+                        android:fontFamily="@font/poppins_bold"
+                        android:textColor="@color/primary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Before making non-essential purchases over R200, force yourself to wait 24 hours. Most impulse urges disappear!"
+                        android:fontFamily="@font/poppins"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tip Item 3 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/surface"
+                app:strokeColor="@color/card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📱 Subscriptions Audit"
+                        android:fontFamily="@font/poppins_bold"
+                        android:textColor="@color/primary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Review streaming and app subscriptions. Cancel services you haven't used in the past 30 days to instantly free up cash flow."
+                        android:fontFamily="@font/poppins"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Tip Item 4 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="6dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/surface"
+                app:strokeColor="@color/card_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎯 50/30/20 Budgeting Rule"
+                        android:fontFamily="@font/poppins_bold"
+                        android:textColor="@color/primary"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Allocate 50% of income to Needs (rent/groceries), 30% to Wants (fun/hobbies), and 20% to Savings &amp; Debt payoff."
+                        android:fontFamily="@font/poppins"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

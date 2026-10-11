@@ -9,5 +9,7 @@ import androidx.room.PrimaryKey
 data class User(
     @PrimaryKey(autoGenerate = true) val user_id: Int = 0,
     @ColumnInfo(name = "username") val username: String,
-    @ColumnInfo(name = "password") val password: String
+    @ColumnInfo(name = "email") val email: String = "",
+    @ColumnInfo(name = "password") val password: String,
+    @ColumnInfo(name = "is_synced") val isSynced: Boolean = false
 )

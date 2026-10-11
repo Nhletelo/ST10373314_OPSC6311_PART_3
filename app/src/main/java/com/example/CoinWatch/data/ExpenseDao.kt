@@ -29,8 +29,6 @@ interface ExpenseDao {
     @Query("SELECT SUM(amount) FROM expenses WHERE user_id = :userId AND date LIKE :datePrefix || '%'")
     suspend fun getTotalExpensesForUserAndMonth(userId: Int, datePrefix: String): Double?
 
-
-
     @Query("""
         SELECT categories.category_name, SUM(expenses.amount) as total 
         FROM expenses 
@@ -53,4 +51,10 @@ interface ExpenseDao {
 
     @Query("DELETE FROM expenses WHERE expense_id = :expenseId")
     suspend fun deleteExpenseById(expenseId: Int)
+
+    @Query("SELECT * FROM expenses WHERE is_synced = 0")
+    suspend fun getUnsyncedExpenses(): List<Expense>
+
+    @Query("UPDATE expenses SET is_synced = 1 WHERE expense_id = :expenseId")
+    suspend fun markExpenseSynced(expenseId: Int)
 }

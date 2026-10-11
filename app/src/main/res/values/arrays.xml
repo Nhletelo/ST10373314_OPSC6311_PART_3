@@ -9,4 +9,13 @@
         <item>reply</item>
         <item>reply_all</item>
     </string-array>
+
+    <string-array name="income_sources_array">
+        <item>Salary</item>
+        <item>Freelance</item>
+        <item>Side Hustle</item>
+        <item>Investment</item>
+        <item>Gift / Bonus</item>
+        <item>Other</item>
+    </string-array>
 </resources>

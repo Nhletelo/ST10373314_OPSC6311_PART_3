@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [User::class, BudgetGoal::class, Expense::class, Category::class],
-    version = 6
+    entities = [User::class, BudgetGoal::class, Expense::class, Category::class, Income::class, SupportTicket::class, ProductPrice::class],
+    version = 11
 )
 abstract class AppDatabase : RoomDatabase() {
 
@@ -15,6 +15,9 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun budgetGoalDao(): BudgetGoalDao
     abstract fun expenseDao(): ExpenseDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun incomeDao(): IncomeDao
+    abstract fun supportTicketDao(): SupportTicketDao
+    abstract fun productPriceDao(): ProductPriceDao
 
     companion object {
         @Volatile

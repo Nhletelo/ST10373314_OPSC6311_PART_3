@@ -13,13 +13,12 @@
         <TextView
             android:id="@+id/textViewHeading"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="101dp"
+            android:layout_marginBottom="16dp"
             android:text="Contact Support"
-            android:textSize="24sp"
-            android:textStyle="bold"
             android:textAlignment="center"
-            android:layout_marginBottom="16dp" />
-
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
@@ -62,7 +61,7 @@
             android:id="@+id/buttonSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send Message✅"
+            android:text="Send Message"
             android:layout_marginTop="16dp" />
 
         <Button
@@ -70,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="⬅️Back" />
+            android:text="⬅Back" />
     </LinearLayout>
 </ScrollView>
 

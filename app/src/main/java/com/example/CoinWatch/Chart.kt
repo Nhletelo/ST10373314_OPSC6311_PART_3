@@ -75,6 +75,11 @@ class Chart : AppCompatActivity() {
                     true
                 }
 
+                R.id.profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    true
+                }
+
 
                 else -> false
             }

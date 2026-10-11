@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.compose)
     kotlin("kapt")
 
 }
@@ -22,6 +24,7 @@ android {
     buildFeatures{
         viewBinding = true
         dataBinding = true
+        compose = true
     }
 
     buildTypes {
@@ -82,20 +85,45 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
-
+//supabase
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.1"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.ktor:ktor-client-android:3.0.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
 
 
 
     // Coroutines
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
 
-    implementation ("com.github.bumptech.glide:glide:4.12.0")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
 
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.code.gson:gson:2.11.0")
+
+    // CameraX
+    val cameraxVersion = "1.4.0"
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+
+    // ML Kit Object Detection for receipt edge analysis
+    implementation("com.google.mlkit:object-detection:17.0.2")
+    // ML Kit Text Recognition (AI OCR) for receipt auto-parsing
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
+    // ML Kit Barcode Scanning for item barcode capture
+    implementation("com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.0")
+
+    // Jetpack Compose
+    implementation(platform("androidx.compose:compose-bom:2024.09.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.activity:activity-compose:1.9.3")
 }
 

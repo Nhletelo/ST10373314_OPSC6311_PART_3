@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.CoinWatch.data.AppDatabase
 import com.example.CoinWatch.data.ExpenseDao
+import com.example.CoinWatch.data.SyncRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,6 +29,7 @@ import androidx.core.content.ContextCompat
 import android.Manifest
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
+import com.example.CoinWatch.data.ExpenseWithCategory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class Transactions : AppCompatActivity() {
@@ -35,10 +37,10 @@ class Transactions : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var transactionAdapter: TransactionAdapter
     private lateinit var expenseDao: ExpenseDao
-    private val REQUEST_CODE_PERMISSION = 101
+    private lateinit var syncRepository: SyncRepository
     private val REQUEST_CODE_READ_STORAGE = 101
     private lateinit var totalTextView: TextView
-
+    private lateinit var emptyStateView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +48,15 @@ class Transactions : AppCompatActivity() {
         setContentView(R.layout.activity_transactions)
 
         totalTextView = findViewById(R.id.totalTextView)
+        emptyStateView = findViewById(R.id.emptyStateView)
+
+        findViewById<ImageButton>(R.id.btnBack)?.setOnClickListener {
+            finish()
+        }
 
         // Set up bottom navigation
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNav.selectedItemId = R.id.transact // Highlight the current item
+        bottomNav.selectedItemId = R.id.transact
 
         bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -57,10 +64,7 @@ class Transactions : AppCompatActivity() {
                     startActivity(Intent(this, HomeScreen::class.java))
                     true
                 }
-                R.id.transact -> {
-                    // Already in Transaction Layout
-                    true
-                }
+                R.id.transact -> true
                 R.id.areachart -> {
                     startActivity(Intent(this, Chart::class.java))
                     true
@@ -69,121 +73,114 @@ class Transactions : AppCompatActivity() {
                     startActivity(Intent(this, AddExpense::class.java))
                     true
                 }
-
-
+                R.id.profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
+                    true
+                }
                 else -> false
             }
         }
 
-
-
-    // Check if permission is granted or not
+        // Check read storage permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            // If not, request the permission
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                 REQUEST_CODE_READ_STORAGE
             )
         }
-        // ---- RecyclerView Setup ----
-        recyclerView = findViewById(R.id.recyclerView) // Make sure your XML uses this ID
+
+        recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.setHasFixedSize(true)
 
-        // ---- Get Database DAO ----
         val db = AppDatabase.getDatabase(applicationContext)
         expenseDao = db.expenseDao()
+        syncRepository = SyncRepository(applicationContext)
 
-        // ---- Get Logged-in User ID ----
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val userId = prefs.getInt("USER_ID", -1)
 
-        // ---- Load Expenses for User ----
         lifecycleScope.launch {
             val expenses = withContext(Dispatchers.IO) {
                 expenseDao.getExpensesByUser(userId)
             }
 
-            if (expenses.isNotEmpty()) {
-                transactionAdapter = TransactionAdapter(
-                    expenses,
-                    onItemClick = { selectedExpense ->
-                        val intent = Intent(this@Transactions, TransactionDetailsActivity::class.java).apply {
-                            putExtra("title", selectedExpense.expense.title)
-                            putExtra("description", selectedExpense.expense.description)
-                            putExtra("amount", selectedExpense.expense.amount.toString())
-                            putExtra("date", selectedExpense.expense.date)
-                            putExtra("startTime", selectedExpense.expense.startTime)
-                            putExtra("category", selectedExpense.category.category_name)
-                            putExtra("photoPath", selectedExpense.expense.photoPath)
-                        }
-                        startActivity(intent)
-                    },
-
-                    onEditClick = { selectedExpense ->
-                        val intent = Intent(this@Transactions, EditTransactionActivity::class.java).apply {
-                            putExtra("expense_id", selectedExpense.expense.expense_id)
-                        }
-                        startActivity(intent)
-                    },
-                    onDeleteClick = { selectedExpense ->
-                        lifecycleScope.launch {
-                            withContext(Dispatchers.IO) {
-                                expenseDao.deleteExpenseById(selectedExpense.expense.expense_id)
-
-                            }
-                            // Refresh the list after deletion
-                            val updatedExpenses = withContext(Dispatchers.IO) {
-                                expenseDao.getExpensesByUser(userId)
-                            }
-                            transactionAdapter.updateData(updatedExpenses)
-                        }
+            transactionAdapter = TransactionAdapter(
+                expenses,
+                onItemClick = { selectedExpense ->
+                    val intent = Intent(this@Transactions, TransactionDetailsActivity::class.java).apply {
+                        putExtra("title", selectedExpense.expense.title)
+                        putExtra("description", selectedExpense.expense.description)
+                        putExtra("amount", selectedExpense.expense.amount.toString())
+                        putExtra("date", selectedExpense.expense.date)
+                        putExtra("startTime", selectedExpense.expense.startTime)
+                        putExtra("category", selectedExpense.category.category_name)
+                        putExtra("photoPath", selectedExpense.expense.photoPath)
                     }
-                )
-                recyclerView.adapter = transactionAdapter
-
-                // ---- Swipe-to-Delete Logic ----
-                val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-                    override fun onMove(
-                        recyclerView: RecyclerView,
-                        viewHolder: RecyclerView.ViewHolder,
-                        target: RecyclerView.ViewHolder
-                    ): Boolean = false
-
-                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                        val position = viewHolder.adapterPosition
-                        val swipedExpense = transactionAdapter.getExpenseAt(position)
-
-                        lifecycleScope.launch {
-                            withContext(Dispatchers.IO) {
-                                expenseDao.deleteExpenseById(swipedExpense.expense.expense_id)
-                            }
-
-                            val updatedExpenses = withContext(Dispatchers.IO) {
-                                expenseDao.getExpensesByUser(userId)
-                            }
-
-                            transactionAdapter.updateData(updatedExpenses)
-                        }
+                    startActivity(intent)
+                },
+                onEditClick = { selectedExpense ->
+                    val intent = Intent(this@Transactions, EditTransactionActivity::class.java).apply {
+                        putExtra("expense_id", selectedExpense.expense.expense_id)
                     }
-                })
-                itemTouchHelper.attachToRecyclerView(recyclerView)
-            }
+                    startActivity(intent)
+                },
+                onDeleteClick = { selectedExpense ->
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            syncRepository.deleteExpenseById(selectedExpense.expense.expense_id)
+                            syncRepository.syncPendingData()
+                        }
+                        val updatedExpenses = withContext(Dispatchers.IO) {
+                            expenseDao.getExpensesByUser(userId)
+                        }
+                        updateListAndEmptyState(updatedExpenses)
+                    }
+                }
+            )
+            recyclerView.adapter = transactionAdapter
+            updateListAndEmptyState(expenses)
+
+            val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean = false
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val position = viewHolder.adapterPosition
+                    val swipedExpense = transactionAdapter.getExpenseAt(position)
+
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            syncRepository.deleteExpenseById(swipedExpense.expense.expense_id)
+                            syncRepository.syncPendingData()
+                        }
+                        val updatedExpenses = withContext(Dispatchers.IO) {
+                            expenseDao.getExpensesByUser(userId)
+                        }
+                        updateListAndEmptyState(updatedExpenses)
+                    }
+                }
+            })
+            itemTouchHelper.attachToRecyclerView(recyclerView)
         }
+
         val categorySpinner = findViewById<Spinner>(R.id.categorySpinner)
         val dateSpinner = findViewById<Spinner>(R.id.dateSpinner)
 
-        val categoryOptions = listOf("All", "Food", "Transport", "Entertainment","Health","Bills","Shopping","Custom")
+        val categoryOptions = listOf("All", "Food", "Transport", "Entertainment", "Health", "Bills", "Shopping", "Custom")
         val dateOptions = listOf("All", "Today", "This Week", "This Month")
 
         categorySpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, categoryOptions)
         dateSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dateOptions)
 
         categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 filterTransactions(categorySpinner.selectedItem.toString(), dateSpinner.selectedItem.toString())
             }
 
@@ -191,6 +188,7 @@ class Transactions : AppCompatActivity() {
         }
         dateSpinner.onItemSelectedListener = categorySpinner.onItemSelectedListener
     }
+
     private fun filterTransactions(category: String, dateRange: String) {
         val userId = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getInt("USER_ID", -1)
 
@@ -209,7 +207,7 @@ class Transactions : AppCompatActivity() {
                     try {
                         SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).parse(expenseDateString)?.time ?: 0L
                     } catch (e: Exception) {
-                        0L // fallback if parse still fails
+                        0L
                     }
                 } else {
                     0L
@@ -230,20 +228,29 @@ class Transactions : AppCompatActivity() {
                 matchCategory && matchDate
             }
 
-            if (::transactionAdapter.isInitialized) {
-                transactionAdapter.updateData(filtered)
-            }
-
-             // ✅ Calculate and update the total
-            val totalAmount = filtered.sumOf { it.expense.amount }
-            totalTextView.text = "Total: R${"%.2f".format(totalAmount)}"
+            updateListAndEmptyState(filtered)
         }
     }
 
+    private fun updateListAndEmptyState(list: List<ExpenseWithCategory>) {
+        if (::transactionAdapter.isInitialized) {
+            transactionAdapter.updateData(list)
+        }
+        if (list.isEmpty()) {
+            emptyStateView.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        } else {
+            emptyStateView.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
+
+        val totalAmount = list.sumOf { it.expense.amount }
+        totalTextView.text = "Total: R${"%.2f".format(totalAmount)}"
+    }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        // ...
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         if (requestCode == REQUEST_CODE_READ_STORAGE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d("Permission", "READ_EXTERNAL_STORAGE permission granted")
@@ -253,6 +260,3 @@ class Transactions : AppCompatActivity() {
         }
     }
 }
-
-
-
