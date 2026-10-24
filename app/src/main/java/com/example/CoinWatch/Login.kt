@@ -30,12 +30,7 @@ class Login : AppCompatActivity() {
         val emailField = findViewById<EditText>(R.id.editTextEmailLogin)
         val passwordField = findViewById<EditText>(R.id.editTextTextPassword)
         val goBackButton = findViewById<ImageButton>(R.id.imageButton)
-        val tvForgotPassword = findViewById<TextView>(R.id.tvForgotPassword)
         val progressBar = findViewById<ProgressBar>(R.id.progressBarLogin)
-
-        tvForgotPassword.setOnClickListener {
-            startActivity(Intent(this, ForgotPasswordActivity::class.java))
-        }
 
         btnLogin.setOnClickListener {
             val email = emailField.text.toString().trim()
