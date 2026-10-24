@@ -28,12 +28,17 @@
     <string-array name="expense_categories">
         <item>Food</item>
         <item>Transport</item>
-        <item>Entertainment</item>
-        <item>Health</item>
-        <item>Bills</item>
+        <item>Housing &amp; Rent</item>
+        <item>Bills &amp; Utilities</item>
         <item>Shopping</item>
+        <item>Entertainment</item>
+        <item>Health &amp; Medical</item>
+        <item>Education</item>
+        <item>Savings &amp; Investments</item>
+        <item>Personal Care</item>
+        <item>Gifts &amp; Donations</item>
+        <item>Business</item>
         <item>Custom</item>
-
         <item>Other</item>
     </string-array>
     <string-array name="theme_options">
@@ -67,5 +72,11 @@
     <string name="filter_247_desc">Filter 24/7 Access</string>
     <string name="close_details">Close details</string>
     <string name="get_directions">Get Directions</string>
+    <string name="modify_income">Modify Income</string>
+    <string name="add_income">Add Income</string>
+    <string name="update_income">Update Income</string>
+    <string name="save_income">Save Income</string>
+    <string name="delete_income">Delete Income</string>
+    <string name="recorded_incomes_title">Recorded Incomes (Tap to Modify/Edit)</string>
 
 </resources>

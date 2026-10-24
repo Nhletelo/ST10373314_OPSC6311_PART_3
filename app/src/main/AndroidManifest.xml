@@ -104,7 +104,13 @@
             android:name=".SupportMessageActivity"
             android:exported="false" />
         <activity
-            android:name=".GamificationActivity"
+            android:name=".RecurringTransactionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".IncomesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ReceiptReviewActivity"
             android:exported="false" />
 
 

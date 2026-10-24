@@ -90,14 +90,10 @@ class SetupBudget : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val existingGoal = budgetDao.getBudgetForUserAndMonth(userId, selectedMonth)
-                    if (existingGoal != null) {
-                        withContext(Dispatchers.Main) {
-                            showToast("Budget for this month already exists.")
-                        }
-                        return@launch
-                    }
+                    val goalId = existingGoal?.goal_id ?: 0
 
                     val goal = BudgetGoal(
+                        goal_id = goalId,
                         user_id = userId,
                         month = selectedMonth,
                         minGoal = minGoal,

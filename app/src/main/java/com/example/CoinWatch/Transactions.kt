@@ -58,7 +58,7 @@ class Transactions : AppCompatActivity() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNav.selectedItemId = R.id.transact
 
-        bottomNav.setOnNavigationItemSelectedListener { item ->
+        bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.homebutton -> {
                     startActivity(Intent(this, HomeScreen::class.java))
@@ -73,8 +73,8 @@ class Transactions : AppCompatActivity() {
                     startActivity(Intent(this, AddExpense::class.java))
                     true
                 }
-                R.id.profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
+                R.id.incomes -> {
+                    startActivity(Intent(this, IncomesActivity::class.java))
                     true
                 }
                 else -> false

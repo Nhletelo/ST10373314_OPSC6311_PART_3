@@ -86,7 +86,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="⚡ LIVE SPENDING INSIGHT"
+                            android:text="LIVE SPENDING INSIGHT"
                             android:fontFamily="@font/poppins_bold"
                             android:textColor="#FEBE10"
                             android:textSize="12sp" />

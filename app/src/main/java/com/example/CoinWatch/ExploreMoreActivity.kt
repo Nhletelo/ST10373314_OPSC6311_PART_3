@@ -54,7 +54,7 @@ class ExploreMoreActivity : AppCompatActivity() {
     }
 
     private fun loadRealTimeDatabaseInsights() {
-        tipTextView.text = "⚡ Analyzing your real-time expense data..."
+        tipTextView.text = "Analyzing your real-time expense data..."
 
         val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val userId = prefs.getInt("USER_ID", -1)
@@ -77,7 +77,7 @@ class ExploreMoreActivity : AppCompatActivity() {
                 val topCategory = categoryTotals.maxByOrNull { it.total }
                 if (topCategory != null && topCategory.total > 0) {
                     generatedTips.add(
-                        "📊 REAL-TIME ANALYSIS:\nYour highest spending category is ${topCategory.category_name} (R${"%.2f".format(topCategory.total)}).\n\n💡 Tip: Cooking 2 more meals at home or reducing non-essential ${topCategory.category_name} buys could save you over R300/month!"
+                        "REAL-TIME ANALYSIS:\nYour highest spending category is ${topCategory.category_name} (R${"%.2f".format(topCategory.total)}).\n\nTip: Cooking 2 more meals at home or reducing non-essential ${topCategory.category_name} buys could save you over R300/month!"
                     )
                 }
             }
@@ -91,15 +91,15 @@ class ExploreMoreActivity : AppCompatActivity() {
 
                 if (percentUsed >= 90) {
                     generatedTips.add(
-                        "🚨 REAL-TIME BUDGET WARNING:\nYou have spent $formattedPercent% of your monthly budget (R$formattedSpent / R$formattedBudget).\n\n💡 Tip: Hold off on non-essential purchases for the rest of $currentMonth to stay within budget!"
+                        "REAL-TIME BUDGET WARNING:\nYou have spent $formattedPercent% of your monthly budget (R$formattedSpent / R$formattedBudget).\n\nTip: Hold off on non-essential purchases for the rest of $currentMonth to stay within budget!"
                     )
                 } else if (percentUsed >= 50) {
                     generatedTips.add(
-                        "📈 REAL-TIME BUDGET UPDATE:\nYou've used $formattedPercent% of your $currentMonth budget (R$formattedSpent / R$formattedBudget).\n\n💡 Tip: Try taking on a '3-Day No-Spend Challenge' this week to preserve your remaining goal!"
+                        "REAL-TIME BUDGET UPDATE:\nYou've used $formattedPercent% of your $currentMonth budget (R$formattedSpent / R$formattedBudget).\n\nTip: Try taking on a '3-Day No-Spend Challenge' this week to preserve your remaining goal!"
                     )
                 } else {
                     generatedTips.add(
-                        "✅ REAL-TIME BUDGET STATUS:\nYou are doing great! You've used $formattedPercent% of your monthly budget (R$formattedSpent / R$formattedBudget).\n\n💡 Tip: Deposit any leftover cash into savings at the end of the month!"
+                        "REAL-TIME BUDGET STATUS:\nYou are doing great! You've used $formattedPercent% of your monthly budget (R$formattedSpent / R$formattedBudget).\n\nTip: Deposit any leftover cash into savings at the end of the month!"
                     )
                 }
             }
@@ -109,11 +109,11 @@ class ExploreMoreActivity : AppCompatActivity() {
                 val totalCount = expenses.size
                 val smallTxCount = expenses.count { it.expense.amount in 1.0..50.0 }
                 generatedTips.add(
-                    "⚡ REAL-TIME SPENDING HABIT:\nYou have logged $totalCount transactions ($smallTxCount micro-purchases under R50).\n\n💡 Tip: Small daily buys (< R50) often accumulate to over R400/month. Keep tracking every transaction!"
+                    "REAL-TIME SPENDING HABIT:\nYou have logged $totalCount transactions ($smallTxCount micro-purchases under R50).\n\nTip: Small daily buys (< R50) often accumulate to over R400/month. Keep tracking every transaction!"
                 )
             } else {
                 generatedTips.add(
-                    "💡 REAL-TIME TIP:\nNo transactions logged yet this month! Start by adding your daily transport or grocery expense to see live spending analytics."
+                    "REAL-TIME TIP:\nNo transactions logged yet this month! Start by adding your daily transport or grocery expense to see live spending analytics."
                 )
             }
 

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.CoinWatch.data.AppDatabase
 import com.example.CoinWatch.data.BudgetGoal
+import com.example.CoinWatch.data.SyncRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ import kotlinx.coroutines.withContext
 
 class BudgetGoalSetup : AppCompatActivity() {
     private lateinit var db: AppDatabase
+    private lateinit var syncRepository: SyncRepository
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
     private var userId: Int = -1
@@ -34,6 +36,7 @@ class BudgetGoalSetup : AppCompatActivity() {
         setContentView(R.layout.activity_budget_goal_setup)
 
         db = AppDatabase.getDatabase(applicationContext)
+        syncRepository = SyncRepository(applicationContext)
 
         // UI Elements
         val btnSubmit = findViewById<Button>(R.id.button7)
@@ -84,22 +87,18 @@ class BudgetGoalSetup : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 val dao = db.budgetGoalDao()
                 val existingGoal = dao.getBudgetForUserAndMonth(userId, selectedMonth)
+                val goalId = existingGoal?.goal_id ?: 0
 
-                if (existingGoal != null) {
-                    val updatedGoal = existingGoal.copy(
-                        minGoal = minGoal,
-                        maxGoal = maxGoal
-                    )
-                    dao.updateGoal(updatedGoal)
-                } else {
-                    val newGoal = BudgetGoal(
-                        user_id = userId,
-                        month = selectedMonth,
-                        minGoal = minGoal,
-                        maxGoal = maxGoal
-                    )
-                    dao.insertGoal(newGoal)
-                }
+                val goal = BudgetGoal(
+                    goal_id = goalId,
+                    user_id = userId,
+                    month = selectedMonth,
+                    minGoal = minGoal,
+                    maxGoal = maxGoal
+                )
+
+                syncRepository.insertBudgetGoal(goal)
+                syncRepository.syncPendingData()
 
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@BudgetGoalSetup, "Budget updated successfully", Toast.LENGTH_SHORT).show()

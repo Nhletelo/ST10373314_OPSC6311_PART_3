@@ -17,6 +17,7 @@ import com.example.CoinWatch.data.ExpenseDao
 import com.example.CoinWatch.data.ExpenseWithCategory
 import com.example.CoinWatch.data.SyncRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.CoinWatch.utils.BudgetAlertManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,8 +31,6 @@ class HomeScreen : AppCompatActivity() {
     private lateinit var db: AppDatabase
     private lateinit var expenseDao: ExpenseDao
     private lateinit var syncRepository: SyncRepository
-    private lateinit var recyclerViewDashboard: RecyclerView
-    private lateinit var transactionAdapter: TransactionAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +67,7 @@ class HomeScreen : AppCompatActivity() {
                 }
                 syncRepository.syncPendingData()
                 syncRepository.pullUserDataFromSupabase(userId)
+                RecurringTransactionsActivity.processDueRecurringTransactions(applicationContext, userId)
                 withContext(Dispatchers.Main) {
                     updateDashboard(userId)
                 }
@@ -78,49 +78,13 @@ class HomeScreen : AppCompatActivity() {
             welcomeText.text = "$greeting, $newUsername"
         }
 
-        // Setup RecyclerView for recent transactions
-        recyclerViewDashboard = findViewById(R.id.recyclerViewDashboard)
-        recyclerViewDashboard.layoutManager = LinearLayoutManager(this)
-        recyclerViewDashboard.isNestedScrollingEnabled = false
-
-        transactionAdapter = TransactionAdapter(
-            emptyList(),
-            onItemClick = { selectedExpense ->
-                val intent = Intent(this, TransactionDetailsActivity::class.java).apply {
-                    putExtra("title", selectedExpense.expense.title)
-                    putExtra("description", selectedExpense.expense.description)
-                    putExtra("amount", selectedExpense.expense.amount.toString())
-                    putExtra("date", selectedExpense.expense.date)
-                    putExtra("startTime", selectedExpense.expense.startTime)
-                    putExtra("category", selectedExpense.category.category_name)
-                    putExtra("photoPath", selectedExpense.expense.photoPath)
-                }
-                startActivity(intent)
-            },
-            onEditClick = { selectedExpense ->
-                val intent = Intent(this, EditTransactionActivity::class.java).apply {
-                    putExtra("expense_id", selectedExpense.expense.expense_id)
-                }
-                startActivity(intent)
-            },
-            onDeleteClick = { selectedExpense ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    syncRepository.deleteExpenseById(selectedExpense.expense.expense_id)
-                    syncRepository.syncPendingData()
-                    withContext(Dispatchers.Main) {
-                        updateDashboard(userId)
-                    }
-                }
-            }
-        )
-        recyclerViewDashboard.adapter = transactionAdapter
-
         updateDashboard(userId)
 
         if (userId != -1) {
             CoroutineScope(Dispatchers.IO).launch {
                 syncRepository.syncPendingData()
                 syncRepository.pullUserDataFromSupabase(userId)
+                RecurringTransactionsActivity.processDueRecurringTransactions(applicationContext, userId)
                 withContext(Dispatchers.Main) {
                     updateDashboard(userId)
                 }
@@ -129,7 +93,7 @@ class HomeScreen : AppCompatActivity() {
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNav.selectedItemId = R.id.homebutton
-        bottomNav.setOnNavigationItemSelectedListener { item ->
+        bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.homebutton -> true
                 R.id.transact -> {
@@ -144,8 +108,8 @@ class HomeScreen : AppCompatActivity() {
                     startActivity(Intent(this, AddExpense::class.java))
                     true
                 }
-                R.id.profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
+                R.id.incomes -> {
+                    startActivity(Intent(this, IncomesActivity::class.java))
                     true
                 }
                 else -> false
@@ -158,8 +122,8 @@ class HomeScreen : AppCompatActivity() {
         findViewById<ImageButton>(R.id.imageButton22).setOnClickListener {
             startActivity(Intent(this, BudgetGoalSetup::class.java))
         }
-        findViewById<ImageButton>(R.id.imageButton23).setOnClickListener {
-            startActivity(Intent(this, GamificationActivity::class.java))
+        findViewById<ImageButton>(R.id.imageButtonAiCoach).setOnClickListener {
+            startActivity(Intent(this, SmartFinancialAdvisorActivity::class.java))
         }
         findViewById<ImageButton>(R.id.imageButtonMessaging).setOnClickListener {
             startActivity(Intent(this, SupportMessageActivity::class.java))
@@ -173,9 +137,15 @@ class HomeScreen : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        findViewById<View>(R.id.cardAiAdvisor)?.setOnClickListener {
+        findViewById<View>(R.id.cardRecurringBills)?.setOnClickListener {
+            startActivity(Intent(this, RecurringTransactionsActivity::class.java))
+        }
+
+        findViewById<View>(R.id.cardAiCoachBanner)?.setOnClickListener {
             startActivity(Intent(this, SmartFinancialAdvisorActivity::class.java))
         }
+
+
     }
 
     private fun updateDashboard(userId: Int) {
@@ -186,9 +156,6 @@ class HomeScreen : AppCompatActivity() {
         val tvIncome = findViewById<TextView>(R.id.tvIncomeAmount)
         val tvBudget = findViewById<TextView>(R.id.tvBudgetAmount)
         val tvSpent = findViewById<TextView>(R.id.spentAmountTextView)
-        val tvSafeToSpend = findViewById<TextView>(R.id.tvSafeToSpendAmount)
-        val tvTodaySpent = findViewById<TextView>(R.id.tvTodaySpent)
-        val tvTotalTransactions = findViewById<TextView>(R.id.tvTotalTransactions)
         val tvHighestCategory = findViewById<TextView>(R.id.tvHighestCategory)
         val tvOverspentStatus = findViewById<TextView>(R.id.tvOverspentStatus)
 
@@ -202,31 +169,12 @@ class HomeScreen : AppCompatActivity() {
             val maxBudget = budgetGoal?.maxGoal ?: 0.0
 
             val allExpenses = expenseDao.getExpensesByUser(userId)
+            val periodSpent = allExpenses.sumOf { it.expense.amount }
 
-            // Calculate Today's spending across all records
-            val todaySpent = allExpenses.filter {
-                DateUtils.isToday(parseDateMillis(it.expense.date))
-            }.sumOf { it.expense.amount }
-
-            // Monthly expenses for dashboard overview
-            val monthlyExpenses = allExpenses.filter { expense ->
-                val dateMillis = parseDateMillis(expense.expense.date)
-                val cal = Calendar.getInstance()
-                val currentMonthCal = cal.get(Calendar.MONTH)
-                val currentYear = cal.get(Calendar.YEAR)
-                cal.timeInMillis = dateMillis
-                cal.get(Calendar.MONTH) == currentMonthCal && cal.get(Calendar.YEAR) == currentYear
-            }.sortedByDescending { parseDateMillis(it.expense.date) }
-
-            // Fallback to recent expenses if none in current month
-            val displayExpenses = if (monthlyExpenses.isNotEmpty()) monthlyExpenses else allExpenses.sortedByDescending { parseDateMillis(it.expense.date) }.take(10)
-
-            val periodSpent = displayExpenses.sumOf { it.expense.amount }
-            val totalTransactionsCount = displayExpenses.size
-            val safeToSpend = (if (maxBudget > 0.0) maxBudget else income) - periodSpent
+            BudgetAlertManager.checkBudgetAndNotify(applicationContext, userId)
 
             // Highest category
-            val categorySums = displayExpenses.groupBy { it.category.category_name }
+            val categorySums = allExpenses.groupBy { it.category.category_name }
                 .mapValues { entry -> entry.value.sumOf { it.expense.amount } }
             val highestCatEntry = categorySums.maxByOrNull { it.value }
             val highestCategoryText = if (highestCatEntry != null) {
@@ -239,27 +187,42 @@ class HomeScreen : AppCompatActivity() {
                 tvIncome.text = "R%.2f".format(income)
                 tvBudget.text = "R%.2f".format(maxBudget)
                 tvSpent.text = "R%.2f".format(periodSpent)
-                tvSafeToSpend.text = "R%.2f".format(safeToSpend)
-                tvTodaySpent.text = "R%.2f".format(todaySpent)
-                tvTotalTransactions.text = totalTransactionsCount.toString()
                 tvHighestCategory.text = highestCategoryText
 
-                transactionAdapter.updateData(displayExpenses)
+                val recurringList = db.recurringTransactionDao().getRecurringTransactionsByUser(userId)
+                    .filter { it.is_active }
+                    .sortedBy { it.next_due_date }
 
-                if (income > 0.0 || maxBudget > 0.0) {
-                    val diff = (if (maxBudget > 0.0) maxBudget else income) - periodSpent
+                val upcomingText = if (recurringList.isNotEmpty()) {
+                    val next = recurringList.first()
+                    "Next: ${next.title} (R${"%.2f".format(next.amount)}) due on ${next.next_due_date}"
+                } else {
+                    "No active recurring bills or subscriptions"
+                }
+                findViewById<TextView>(R.id.tvUpcomingBillSummary)?.text = upcomingText
+
+                if (income > 0.0) {
+                    val diff = income - periodSpent
                     if (diff < 0) {
                         val overspentAmount = -diff
-                        tvOverspentStatus.text = "🚨 OVERSPENT BY R%.2f!".format(overspentAmount)
+                        tvOverspentStatus.text = "OVERSPENT BY R%.2f!".format(overspentAmount)
                         tvOverspentStatus.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#E53935"))
                     } else {
                         tvOverspentStatus.text = "Safe-to-Spend Balance: R%.2f".format(diff)
                         tvOverspentStatus.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#2E7D32"))
                     }
                 } else {
-                    tvOverspentStatus.text = "Set Monthly Income & Budget in Budget Setup"
+                    tvOverspentStatus.text = "Set Monthly Income in Add Income or Setup Budget"
                     tvOverspentStatus.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#26FFFFFF"))
                 }
+
+                val aiInsightText = when {
+                    maxBudget > 0 && periodSpent > maxBudget -> "You have exceeded your monthly budget. Tap here to view AI Coach recommendations for budget recovery."
+                    maxBudget > 0 && (periodSpent / maxBudget) >= 0.8 -> "You have used over 80% of your monthly budget. Tap here for AI advice on saving."
+                    highestCatEntry != null -> "Your highest expense is in ${highestCatEntry.key} (R${"%.2f".format(highestCatEntry.value)}). Tap here for AI insights."
+                    else -> "Welcome! Add your income and expenses to unlock personalized AI financial coaching."
+                }
+                findViewById<TextView>(R.id.tvAiCoachBannerText)?.text = aiInsightText
             }
         }
     }
@@ -286,6 +249,7 @@ class HomeScreen : AppCompatActivity() {
             CoroutineScope(Dispatchers.IO).launch {
                 syncRepository.syncPendingData()
                 syncRepository.pullUserDataFromSupabase(userId)
+                RecurringTransactionsActivity.processDueRecurringTransactions(applicationContext, userId)
                 withContext(Dispatchers.Main) {
                     updateDashboard(userId)
                 }

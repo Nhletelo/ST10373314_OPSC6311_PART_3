@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="20dp"
         android:paddingTop="36dp"
         android:paddingBottom="12dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Add Expense &amp; Scan Receipt"
+            android:text="New Expense"
             android:fontFamily="@font/poppins_bold"
             android:textSize="22sp"
             android:textColor="@color/text_primary"
@@ -44,12 +44,58 @@
             android:layout_marginStart="12dp" />
     </LinearLayout>
 
+    <!-- Tab Selector (Manual vs Scan) -->
+    <LinearLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingBottom="12dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btnTabManual"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/primary"
+            android:text="Manual Entry"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            app:cornerRadius="10dp" />
+
+        <Button
+            android:id="@+id/btnTabScan"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/surface"
+            android:text="Scan Receipt"
+            android:fontFamily="@font/poppins_semibold"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            app:cornerRadius="10dp" />
+    </LinearLayout>
+
+    <!-- Hairline Divider -->
+    <View
+        android:id="@+id/headerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/card_border"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingBottom="24dp"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        android:paddingBottom="32dp"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -58,302 +104,318 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="20dp">
 
-            <!-- Expense Details Card -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Expense Title"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary" />
+
+            <EditText
+                android:id="@+id/editTextText3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="3dp"
-                app:cardBackgroundColor="@color/surface"
-                app:strokeColor="@color/card_border"
-                app:strokeWidth="1dp">
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/input_bg"
+                android:hint="e.g. Lunch at Nando's"
+                android:inputType="text"
+                android:padding="12dp"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
 
+            <!-- Description -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary" />
+
+            <EditText
+                android:id="@+id/editTextText4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/input_bg"
+                android:hint="Enter details or notes..."
+                android:inputType="text"
+                android:padding="12dp"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+
+            <!-- Amount -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Amount (R)"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary" />
+
+            <EditText
+                android:id="@+id/editTextNumberDecimal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/input_bg"
+                android:hint="0.00"
+                android:inputType="numberDecimal"
+                android:padding="12dp"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+
+            <!-- Category -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:fontFamily="@font/poppins_medium"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary" />
+
+            <Spinner
+                android:id="@+id/spinner2"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/input_bg" />
+
+            <EditText
+                android:id="@+id/editTextCustomCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/input_bg"
+                android:hint="Enter custom category"
+                android:inputType="text"
+                android:padding="12dp"
+                android:visibility="gone"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp" />
+
+            <!-- Date & Time Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <!-- Date Column -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                    <!-- Title -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Expense Title"
+                        android:text="Date"
                         android:fontFamily="@font/poppins_medium"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary" />
-
-                    <EditText
-                        android:id="@+id/editTextText3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:background="@drawable/input_bg"
-                        android:hint="e.g. Lunch at Nando's"
-                        android:inputType="text"
-                        android:padding="12dp"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp" />
-
-                    <!-- Description -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Description"
-                        android:fontFamily="@font/poppins_medium"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginTop="12dp" />
-
-                    <EditText
-                        android:id="@+id/editTextText4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:background="@drawable/input_bg"
-                        android:hint="Enter details or notes..."
-                        android:inputType="text"
-                        android:padding="12dp"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp" />
-
-                    <!-- Amount -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Amount (R)"
-                        android:fontFamily="@font/poppins_medium"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginTop="12dp" />
-
-                    <EditText
-                        android:id="@+id/editTextNumberDecimal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:background="@drawable/input_bg"
-                        android:hint="0.00"
-                        android:inputType="numberDecimal"
-                        android:padding="12dp"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp" />
-
-                    <!-- Category -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Category"
-                        android:fontFamily="@font/poppins_medium"
-                        android:textSize="14sp"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginTop="12dp" />
-
-                    <Spinner
-                        android:id="@+id/spinner2"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="4dp"
-                        android:background="@drawable/input_bg" />
-
-                    <EditText
-                        android:id="@+id/editTextCustomCategory"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/input_bg"
-                        android:hint="Enter custom category"
-                        android:inputType="text"
-                        android:padding="12dp"
-                        android:visibility="gone"
-                        android:textColor="@color/text_primary"
-                        android:textSize="15sp" />
-
-                    <!-- Date & Time Row -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="16dp">
-
-                        <!-- Date Column -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Date"
-                                android:fontFamily="@font/poppins_medium"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_primary" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginTop="4dp">
-
-                                <TextView
-                                    android:id="@+id/editTextDate"
-                                    android:layout_width="0dp"
-                                    android:layout_height="44dp"
-                                    android:layout_weight="1"
-                                    android:background="@drawable/input_bg"
-                                    android:gravity="center_vertical"
-                                    android:hint="YYYY/MM/DD"
-                                    android:padding="10dp"
-                                    android:textColor="@color/text_primary"
-                                    android:textSize="14sp" />
-
-                                <Button
-                                    android:id="@+id/btnShowDatePicker"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="44dp"
-                                    android:layout_marginStart="6dp"
-                                    android:backgroundTint="@color/accent"
-                                    android:text="Date"
-                                    android:textColor="#000000"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <!-- Time Column -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="12dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Time"
-                                android:fontFamily="@font/poppins_medium"
-                                android:textSize="14sp"
-                                android:textColor="@color/text_primary" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:gravity="center_vertical"
-                                android:layout_marginTop="4dp">
-
-                                <TextView
-                                    android:id="@+id/editTextTime"
-                                    android:layout_width="0dp"
-                                    android:layout_height="44dp"
-                                    android:layout_weight="1"
-                                    android:background="@drawable/input_bg"
-                                    android:gravity="center_vertical"
-                                    android:hint="HH:MM"
-                                    android:padding="10dp"
-                                    android:textColor="@color/text_primary"
-                                    android:textSize="14sp" />
-
-                                <Button
-                                    android:id="@+id/btnPickTime"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="44dp"
-                                    android:layout_marginStart="6dp"
-                                    android:backgroundTint="@color/accent"
-                                    android:text="Time"
-                                    android:textColor="#000000"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Scan Receipt Section -->
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="📸 Scan Receipt (AI Auto-Fill)"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:textSize="15sp"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginTop="20dp" />
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginTop="8dp">
+                        android:layout_marginTop="4dp">
 
-                        <!-- Capture Receipt Camera Button -->
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/editTextDate"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/input_bg"
+                            android:gravity="center_vertical"
+                            android:hint="YYYY/MM/DD"
+                            android:padding="10dp"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp" />
+
+                        <Button
+                            android:id="@+id/btnShowDatePicker"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-
-                            <ImageButton
-                                android:id="@+id/imageButton20"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:background="@drawable/button_border_selected"
-                                android:contentDescription="Scan Receipt"
-                                android:padding="12dp"
-                                android:scaleType="fitCenter"
-                                app:srcCompat="@drawable/camera" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Scan"
-                                android:fontFamily="@font/poppins"
-                                android:textSize="12sp"
-                                android:textColor="@color/text_secondary"
-                                android:layout_marginTop="4dp" />
-                        </LinearLayout>
-
-                        <!-- Receipt Image Preview -->
-                        <com.google.android.material.card.MaterialCardView
-                            android:layout_width="70dp"
-                            android:layout_height="70dp"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="2dp"
-                            app:strokeColor="@color/card_border"
-                            app:strokeWidth="1dp"
-                            android:layout_marginStart="32dp">
-
-                            <ImageView
-                                android:id="@+id/imgCameraImage"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:scaleType="centerCrop"
-                                android:contentDescription="Receipt Preview"
-                                android:src="@drawable/ic_launcher_foreground" />
-                        </com.google.android.material.card.MaterialCardView>
-
+                            android:layout_height="44dp"
+                            android:layout_marginStart="6dp"
+                            android:backgroundTint="@color/accent"
+                            android:text="Date"
+                            android:textColor="#000000"
+                            android:textSize="12sp" />
                     </LinearLayout>
-
-                    <!-- Submit Button -->
-                    <Button
-                        android:id="@+id/button6"
-                        android:layout_width="match_parent"
-                        android:layout_height="52dp"
-                        android:layout_marginTop="24dp"
-                        android:backgroundTint="@color/primary"
-                        android:text="Save Expense"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        app:cornerRadius="12dp" />
-
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                <!-- Time Column -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Time"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_secondary" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="4dp">
+
+                        <TextView
+                            android:id="@+id/editTextTime"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/input_bg"
+                            android:gravity="center_vertical"
+                            android:hint="HH:MM"
+                            android:padding="10dp"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp" />
+
+                        <Button
+                            android:id="@+id/btnPickTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="44dp"
+                            android:layout_marginStart="6dp"
+                            android:backgroundTint="@color/accent"
+                            android:text="Time"
+                            android:textColor="#000000"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Hairline Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/card_border"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Scan Receipt Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scan Receipt (AI Auto-Fill)"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="14sp"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="24dp">
+
+                <!-- Capture Receipt Camera Button -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageButton
+                        android:id="@+id/imageButton20"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/button_border_selected"
+                        android:contentDescription="Scan Receipt"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/camera" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Scan"
+                        android:fontFamily="@font/poppins"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Upload Receipt from Gallery Button -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginStart="16dp">
+
+                    <ImageButton
+                        android:id="@+id/imageButtonUploadGallery"
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:background="@drawable/button_border_selected"
+                        android:contentDescription="Upload Receipt"
+                        android:padding="12dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/gallery" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upload"
+                        android:fontFamily="@font/poppins"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- Receipt Image Preview -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="1dp"
+                    app:strokeColor="@color/card_border"
+                    app:strokeWidth="1dp"
+                    android:layout_marginStart="24dp">
+
+                    <ImageView
+                        android:id="@+id/imgCameraImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Receipt Preview"
+                        android:src="@drawable/ic_launcher_foreground" />
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/button6"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/primary"
+                android:text="Save Expense"
+                android:fontFamily="@font/poppins_semibold"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                app:cornerRadius="12dp" />
 
         </LinearLayout>
     </ScrollView>

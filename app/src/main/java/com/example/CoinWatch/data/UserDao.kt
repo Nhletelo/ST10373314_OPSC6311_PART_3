@@ -34,4 +34,10 @@ interface UserDao {
 
     @Query("UPDATE users SET password = :newPassword, is_synced = 0 WHERE email = :email")
     suspend fun updatePasswordByEmail(email: String, newPassword: String)
+
+    @Query("UPDATE users SET username = :username, is_synced = 0 WHERE user_id = :userId")
+    suspend fun updateUsername(userId: Int, username: String)
+
+    @Query("DELETE FROM users WHERE user_id = :userId")
+    suspend fun deleteUserById(userId: Int)
 }

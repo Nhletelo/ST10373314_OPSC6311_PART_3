@@ -4,16 +4,16 @@
     <item android:title="Home"
         android:icon="@drawable/home"
         android:id="@+id/homebutton"/>
-    <item android:title="Add"
-        android:icon="@drawable/baseline_add_circle_24"
-        android:id="@+id/expense"/>
-    <item android:title="History"
-        android:icon="@drawable/history"
-        android:id="@+id/transact"/>
     <item android:title="Chart"
         android:icon="@drawable/pie_chart"
         android:id="@+id/areachart"/>
-    <item android:title="Profile"
-        android:icon="@drawable/settings"
-        android:id="@+id/profile"/>
+    <item android:title="Add"
+        android:icon="@drawable/baseline_add_circle_24"
+        android:id="@+id/expense"/>
+    <item android:title="Transaction"
+        android:icon="@drawable/history"
+        android:id="@+id/transact"/>
+    <item android:title="Income"
+        android:icon="@drawable/currency"
+        android:id="@+id/incomes"/>
 </menu>

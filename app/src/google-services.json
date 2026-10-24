@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "299228519313",
+    "project_id": "coinwatch-b56d9",
+    "storage_bucket": "coinwatch-b56d9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299228519313:android:57e8af9c937fa0080a1830",
+        "android_client_info": {
+          "package_name": "com.example.CoinWatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBP63KBRkTdiWoUVJhizU2jmCcH8pbMKBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

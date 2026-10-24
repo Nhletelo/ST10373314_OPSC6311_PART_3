@@ -1,17 +1,14 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-
-
-    <!-- User Profile Section -->
-    <Preference
-        android:key="profile"
-        android:title="User Profile"
-        android:summary="Manage your profile settings"
-        app:icon="@drawable/user"
-        android:enabled="false"/>
-        <!-- app:widgetLayout="@layout/profile_item" -->
-
+    <!-- Budget Management -->
+    <PreferenceCategory android:title="Budget Management">
+        <Preference
+            android:key="delete_budget"
+            android:title="Delete Budget Goals"
+            android:summary="Remove or reset your monthly budget goals"
+            app:icon="@drawable/delete"/>
+    </PreferenceCategory>
 
     <!-- General Settings -->
     <PreferenceCategory android:title="General">

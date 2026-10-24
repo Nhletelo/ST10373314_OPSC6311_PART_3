@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="Dashboard"
                 android:fontFamily="@font/poppins_bold"
-                android:textSize="26sp"
+                android:textSize="22sp"
                 android:textColor="@color/text_primary" />
 
             <TextView
@@ -44,21 +44,28 @@
                 android:layout_height="wrap_content"
                 android:text="Welcome, User"
                 android:fontFamily="@font/poppins"
-                android:textSize="15sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="2dp" />
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary" />
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/btnOpenProfile"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="@drawable/button_border_selected"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="User Profile"
-            android:padding="10dp"
+            android:padding="8dp"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/settings" />
     </LinearLayout>
+
+    <!-- Hairline Divider -->
+    <View
+        android:id="@+id/headerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/card_border"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
 
     <!-- Scrollable Content -->
     <ScrollView
@@ -66,8 +73,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        android:paddingBottom="24dp"
+        app:layout_constraintTop_toBottomOf="@id/headerDivider"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -76,17 +83,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp">
+            android:padding="20dp">
 
-            <!-- Financial Overview Card (Income, Spent, Quick Stats, Balance/Overspent) -->
+            <!-- Financial Overview Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="6dp"
-                app:cardBackgroundColor="@color/primary">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/primary"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -112,7 +120,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Total Income"
                                 android:fontFamily="@font/poppins_medium"
-                                android:textColor="#D0E0FF"
+                                android:textColor="#B9F6CA"
                                 android:textSize="12sp" />
 
                             <LinearLayout
@@ -129,8 +137,7 @@
                                     android:text="R0.00"
                                     android:fontFamily="@font/poppins_bold"
                                     android:textColor="#FFFFFF"
-                                    android:textSize="16sp"
-                                    android:layout_marginTop="2dp" />
+                                    android:textSize="16sp" />
 
                                 <ImageButton
                                     android:id="@+id/btnAddIncomeQuick"
@@ -146,7 +153,7 @@
                             android:layout_width="1dp"
                             android:layout_height="32dp"
                             android:background="#4DFFFFFF"
-                            android:layout_marginHorizontal="8dp" />
+                            android:layout_marginHorizontal="12dp" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -175,13 +182,13 @@
 
                     </LinearLayout>
 
-                    <!-- Row 2: Total Spending vs Safe-to-Spend -->
+                    <!-- Row 2: Total Spending & Highest Category -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginTop="12dp">
+                        android:layout_marginTop="16dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -194,7 +201,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Total Spending"
                                 android:fontFamily="@font/poppins_medium"
-                                android:textColor="#D0E0FF"
+                                android:textColor="#FFCDD2"
                                 android:textSize="12sp" />
 
                             <TextView
@@ -208,107 +215,19 @@
                                 android:layout_marginTop="2dp" />
                         </LinearLayout>
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="32dp"
-                            android:background="#4DFFFFFF"
-                            android:layout_marginHorizontal="8dp" />
-
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Safe-to-Spend"
-                                android:fontFamily="@font/poppins_medium"
-                                android:textColor="#D0E0FF"
-                                android:textSize="12sp" />
-
-                            <TextView
-                                android:id="@+id/tvSafeToSpendAmount"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="R0.00"
-                                android:fontFamily="@font/poppins_bold"
-                                android:textColor="#FFFFFF"
-                                android:textSize="16sp"
-                                android:layout_marginTop="2dp" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- Quick Stats Row (Today, Total Transactions, Highest Category) -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="16dp"
-                        android:gravity="center_vertical">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Today"
-                                android:textColor="#D0E0FF"
-                                android:textSize="11sp"
-                                android:fontFamily="@font/poppins_medium" />
-
-                            <TextView
-                                android:id="@+id/tvTodaySpent"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="R0.00"
-                                android:textColor="#FFFFFF"
-                                android:textSize="13sp"
-                                android:fontFamily="@font/poppins_bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Transactions"
-                                android:textColor="#D0E0FF"
-                                android:textSize="11sp"
-                                android:fontFamily="@font/poppins_medium" />
-
-                            <TextView
-                                android:id="@+id/tvTotalTransactions"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="#FFFFFF"
-                                android:textSize="13sp"
-                                android:fontFamily="@font/poppins_bold" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1.2"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Highest Category"
                                 android:textColor="#D0E0FF"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 android:fontFamily="@font/poppins_medium" />
 
                             <TextView
@@ -317,10 +236,11 @@
                                 android:layout_height="wrap_content"
                                 android:text="None"
                                 android:textColor="#FFFFFF"
-                                android:textSize="12sp"
+                                android:textSize="14sp"
                                 android:maxLines="1"
                                 android:ellipsize="end"
-                                android:fontFamily="@font/poppins_bold" />
+                                android:fontFamily="@font/poppins_bold"
+                                android:layout_marginTop="2dp" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -337,20 +257,75 @@
                         android:text="Set Monthly Income in Budget Setup"
                         android:fontFamily="@font/poppins_semibold"
                         android:textColor="#FFFFFF"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:gravity="center" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- AI Financial Coach Card Banner -->
+            <!-- Proactive AI Coach Insights Banner -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardAiAdvisor"
+                android:id="@+id/cardAiCoachBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="8dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="4dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="@color/surface"
+                app:strokeColor="@color/accent"
+                app:strokeWidth="1.5dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="AI Coach Proactive Insight"
+                            android:fontFamily="@font/poppins_bold"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            app:srcCompat="@drawable/chat"
+                            android:contentDescription="AI" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvAiCoachBannerText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Analyzing your spending habits..."
+                        android:fontFamily="@font/poppins"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Recurring Bills & Subscriptions Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardRecurringBills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
                 app:cardBackgroundColor="@color/surface"
                 app:strokeColor="@color/card_border"
                 app:strokeWidth="1dp">
@@ -363,38 +338,40 @@
                     android:padding="16dp">
 
                     <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="AI Coach"
-                        app:srcCompat="@drawable/binocular" />
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:contentDescription="Recurring Bills"
+                        app:srcCompat="@drawable/currency" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="14dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="AI Financial Coach &amp; Insights"
+                            android:text="Recurring Bills &amp; Subscriptions"
                             android:fontFamily="@font/poppins_bold"
                             android:textColor="@color/text_primary"
-                            android:textSize="15sp" />
+                            android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/tvUpcomingBillSummary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tap for smart tips &amp; health score"
+                            android:text="Manage automatic monthly bills &amp; income"
                             android:fontFamily="@font/poppins"
                             android:textColor="@color/text_secondary"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
                     </LinearLayout>
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:contentDescription="Arrow"
                         app:srcCompat="@drawable/baseline_arrow_back_24"
                         android:rotation="180" />
@@ -407,12 +384,11 @@
                 android:layout_height="wrap_content"
                 android:text="Quick Actions"
                 android:fontFamily="@font/poppins_semibold"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:textColor="@color/text_primary"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginBottom="10dp" />
 
-            <!-- Grid Layout for 6 Actions -->
+            <!-- Grid Layout for Actions -->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -425,9 +401,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:layout_margin="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="1dp"
                     app:cardBackgroundColor="@color/surface"
                     app:strokeColor="@color/card_border"
                     app:strokeWidth="1dp">
@@ -441,21 +417,20 @@
 
                         <ImageButton
                             android:id="@+id/imageButton21"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
                             android:background="@drawable/button_border_selected"
-                            android:contentDescription="Create Budget"
+                            android:contentDescription="Budget Setup"
                             android:padding="10dp"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/settings" />
+                            android:scaleType="centerInside"
+                            app:srcCompat="@drawable/budget_icon" />
 
                         <TextView
-                            android:id="@+id/textView16"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Create Budget"
                             android:fontFamily="@font/poppins_medium"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textColor="@color/text_primary"
                             android:layout_marginTop="10dp" />
                     </LinearLayout>
@@ -466,9 +441,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:layout_margin="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="1dp"
                     app:cardBackgroundColor="@color/surface"
                     app:strokeColor="@color/card_border"
                     app:strokeWidth="1dp">
@@ -482,34 +457,33 @@
 
                         <ImageButton
                             android:id="@+id/imageButton22"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
                             android:background="@drawable/button_border_selected"
                             android:contentDescription="Update Budget"
                             android:padding="10dp"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/target" />
+                            android:scaleType="centerInside"
+                            app:srcCompat="@drawable/financial_goals" />
 
                         <TextView
-                            android:id="@+id/textView26"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Update Budget"
                             android:fontFamily="@font/poppins_medium"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textColor="@color/text_primary"
                             android:layout_marginTop="10dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- 4. Play Game -->
+                <!-- 3. AI Coach -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:layout_margin="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="1dp"
                     app:cardBackgroundColor="@color/surface"
                     app:strokeColor="@color/card_border"
                     app:strokeWidth="1dp">
@@ -522,35 +496,34 @@
                         android:padding="16dp">
 
                         <ImageButton
-                            android:id="@+id/imageButton23"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
+                            android:id="@+id/imageButtonAiCoach"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
                             android:background="@drawable/button_border_selected"
-                            android:contentDescription="Play Game"
+                            android:contentDescription="AI Coach"
                             android:padding="10dp"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/joystick" />
+                            android:scaleType="centerInside"
+                            app:srcCompat="@drawable/explore" />
 
                         <TextView
-                            android:id="@+id/textViewquiz"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Game &amp; Quiz"
+                            android:text="AI Coach"
                             android:fontFamily="@font/poppins_medium"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textColor="@color/text_primary"
                             android:layout_marginTop="10dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- 6. Contact Support -->
+                <!-- 4. Contact Support -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:layout_margin="6dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="1dp"
                     app:cardBackgroundColor="@color/surface"
                     app:strokeColor="@color/card_border"
                     app:strokeWidth="1dp">
@@ -564,46 +537,26 @@
 
                         <ImageButton
                             android:id="@+id/imageButtonMessaging"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
                             android:background="@drawable/button_border_selected"
-                            android:contentDescription="Contact Support"
+                            android:contentDescription="Support"
                             android:padding="10dp"
-                            android:scaleType="fitCenter"
-                            app:srcCompat="@drawable/email" />
+                            android:scaleType="centerInside"
+                            app:srcCompat="@drawable/message" />
 
                         <TextView
-                            android:id="@+id/textView110"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Support"
                             android:fontFamily="@font/poppins_medium"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textColor="@color/text_primary"
                             android:layout_marginTop="10dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
             </GridLayout>
-
-            <!-- Section Label: Recent Transactions -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Recent Transactions"
-                android:fontFamily="@font/poppins_semibold"
-                android:textSize="18sp"
-                android:textColor="@color/text_primary"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="8dp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewDashboard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                tools:itemCount="3"
-                tools:listitem="@layout/transaction_item" />
 
         </LinearLayout>
     </ScrollView>
@@ -615,8 +568,9 @@
         android:layout_height="wrap_content"
         android:background="@color/surface"
         app:elevation="12dp"
-        app:itemIconTint="@color/blue"
-        app:itemTextColor="@color/blue"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

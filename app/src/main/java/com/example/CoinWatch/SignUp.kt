@@ -13,6 +13,7 @@ import com.example.CoinWatch.data.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.security.MessageDigest
 
 class SignUp : AppCompatActivity() {
@@ -65,10 +66,15 @@ class SignUp : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            btnSignup.isEnabled = false
+            btnSignup.text = "Creating account..."
+
             CoroutineScope(Dispatchers.IO).launch {
                 val existingUser = db.userDao().getUserByEmail(email)
                 if (existingUser != null) {
-                    runOnUiThread {
+                    withContext(Dispatchers.Main) {
+                        btnSignup.isEnabled = true
+                        btnSignup.text = "Sign Up"
                         Toast.makeText(this@SignUp, "Email already exists", Toast.LENGTH_SHORT).show()
                     }
                 } else {
@@ -77,7 +83,7 @@ class SignUp : AppCompatActivity() {
                     syncRepository.insertUser(newUser)
                     syncRepository.syncPendingData()
 
-                    runOnUiThread {
+                    withContext(Dispatchers.Main) {
                         Toast.makeText(this@SignUp, "Account created successfully", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this@SignUp, Login::class.java)
                         startActivity(intent)

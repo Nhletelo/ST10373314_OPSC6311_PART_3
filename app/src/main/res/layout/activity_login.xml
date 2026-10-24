@@ -117,19 +117,27 @@
                         android:textSize="14sp"
                         android:layout_marginTop="16dp" />
 
-                    <!-- Password Input -->
-                    <EditText
-                        android:id="@+id/editTextTextPassword"
+                    <!-- Password Input Layout with Toggle Eye -->
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:background="@drawable/input_bg"
-                        android:hint="Enter your password"
-                        android:inputType="textPassword"
-                        android:padding="14dp"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_hint"
-                        android:textSize="15sp" />
+                        app:endIconMode="password_toggle"
+                        app:boxBackgroundMode="none"
+                        app:hintEnabled="false">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editTextTextPassword"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/input_bg"
+                            android:hint="Enter your password"
+                            android:inputType="textPassword"
+                            android:padding="14dp"
+                            android:textColor="@color/text_primary"
+                            android:textColorHint="@color/text_hint"
+                            android:textSize="15sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Login Button -->
                     <Button
@@ -143,6 +151,16 @@
                         android:textColor="#FFFFFF"
                         android:textSize="16sp"
                         app:cornerRadius="12dp" />
+
+                    <!-- Loading Progress Bar -->
+                    <ProgressBar
+                        android:id="@+id/progressBarLogin"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:indeterminateTint="@color/primary"
+                        android:visibility="gone" />
 
                     <!-- Forgot Password -->
                     <TextView
