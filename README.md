@@ -1,57 +1,67 @@
-## CoinWatch 
+# CoinWatch - Personal Finance & Budget Tracker
 
-**CoinWatch** is a user-friendly budgeting app designed to help individuals track their expenses, set financial goals, and maintain control over their spending habits. This app provides a comprehensive solution for managing finances with ease, allowing users to stay organized and on budget.
-
----
-
-### Key Features
-
-* **Secure Sign Up & Login**
-  Users can securely create an account and log in to protect their financial data. Only authorized users can access their personal information.
-
-* **Expense Tracking**
-  CoinWatch enables users to manually record their daily expenses, entering the amount, date, and description of each transaction for easy tracking.
-
-* **Custom Categories**
-  Users can create and manage personalized categories such as groceries, transport, and bills, allowing for better organization and analysis of their expenses.
-
-* **Monthly Budget Goals**
-  The app allows users to set spending limits for each category. Notifications are sent when users are approaching or exceeding their set budget, ensuring they stay on track.
-
-* **Visual Reports**
-  CoinWatch generates clear visual reports, including bar graphs and summaries, to help users understand their spending trends and evaluate their financial progress over time.
-
-* **Attach Receipts**
-  Users can attach photos of receipts to their expenses, providing a visual record of their purchases and supporting accurate tracking.
-
-* **Find Nearby ATMs**
-  The app features an interactive map to help users locate ATMs within a 5km radius, including details on fees and availability.
-
-* **Financial Progress & Rewards**
-  CoinWatch motivates users by offering badges and rewards for consistent tracking and meeting financial goals, promoting engagement and discipline.
-
-* **Real-Time Dashboard**
-  A dynamic dashboard presents users with a clear view of their financial status, including spending trends, category breakdowns, and whether they are staying within their budget.
-
-* **Private & Secure**
-  All user data is securely encrypted and stored. Users can also export their financial data in PDF format for additional security and record-keeping.
-
-* **In-App Support Messaging**
-  CoinWatch offers an integrated messaging system where users can reach out to customer support for assistance with financial management or technical issues.
+**CoinWatch** is a personal finance tracker designed for Android (Kotlin, SDK 35). Built with a local-first Room database and synchronized with a Supabase PostgreSQL cloud backend, CoinWatch equips users with smart AI receipt scanning, recurring bill automation, proactive financial coaching, and custom monthly budgeting.
 
 ---
 
-### Who Should Use CoinWatch?
+## Key Features
 
-* Students learning to manage their finances
-* Professionals tracking income and expenditures
-* Families looking to control household spending
-* Anyone seeking to improve their financial management and budgeting skills
+### 1. Smart AI Receipt Scanner (ML Kit OCR)
+* **CameraX & Gallery Input:** Capture receipts using live camera feed (with flashlight toggle) or upload receipt images directly from the gallery.
+* **Automatic Field Extraction:** ML Kit Text Recognition automatically extracts Merchant/Vendor, Date, Total Amount, Tax/VAT, and Category.
+* **Review & Correction Workflow:** Extracted fields populate editable inputs, allowing users to verify or adjust values before saving.
 
+### 2. Cloud Synchronization & Local Persistence
+* **Offline-First Architecture:** Powered by Room local database so the app works offline.
+* **Supabase Cloud Sync:** Syncs transactions, incomes, categories, budget goals, and support tickets with Supabase PostgreSQL when online.
+* **MailerSend OTP Password Reset:** Password reset links and 6-digit OTP codes delivered via MailerSend REST API.
 
+### 3. Monthly Incomes & Expenses CRUD
+* **Income Management:** Create, list, filter by month, edit, and delete monthly income entries.
+* **Expense Tracking:** Log expenses manually or via AI receipt scanner with category classification and date filtering.
+* **Safe-to-Spend Balance:** Automatically deducts total expenses from total income to display the exact safe-to-spend balance.
 
+### 4. Recurring Transactions & Subscriptions
+* **Automated Processing:** Automatically checks due dates on app startup and logs recurring bills or regular incomes when due.
+* **Tomorrow-Onward Scheduling:** Prevents invalid same-day duplicates by requiring new recurring bills to be scheduled starting from tomorrow.
 
+### 5. Proactive AI Financial Coach & Budget Alerts
+* **Dashboard Proactive Insights:** Live AI banner on the dashboard analyzing spending habits, budget limits, and top categories.
+* **Budget Alert Notifications:** High-priority local notifications sent at 80% budget usage warning and 100% budget overspending.
 
+### 6. Modern Material 3 UI/UX & South African Rand (R) Currency
+* **Material 3 Design:** Human-designed layouts with clean typography, hairline dividers, and state-aware interactions.
+* **South African Rand (`R`):** Tailored for South African currency formatting (`R`).
+* **Account Management:** Edit display name, log out, or delete user account with cloud cleanup.
 
+---
 
+## Tech Stack & Architecture
 
+* **Language:** Kotlin (Android SDK 35)
+* **UI Toolkit:** Android Views (XML Layouts), Material Components (Material 3), Jetpack Compose
+* **Local Database:** Room Database (SQLite)
+* **Cloud Backend:** Supabase Kotlin SDK (`postgrest-kt`, `auth-kt`)
+* **Email & OTP Delivery:** MailerSend REST API via Ktor Client
+* **AI & OCR:** ML Kit Text Recognition (`com.google.mlkit:text-recognition`)
+* **Camera & Media:** CameraX (`androidx.camera`), Glide Image Loading
+* **Analytics & Charts:** AnyChart Pie & Area Charts
+* **Asynchronous Execution:** Kotlin Coroutines & StateFlow/Flow
+
+---
+
+## Getting Started
+
+1. **Clone & Open:** Open the project in Android Studio (2024.2+ recommended).
+2. **Configuration:**
+   - Ensure `google-services.json` is placed inside the `app/` directory.
+   - Verify Supabase credentials in `SupabaseClient.kt`.
+3. **Build & Run:**
+   - Command line: `./gradlew app:assembleDebug`
+   - Run on an Android Device or Emulator running API 27+.
+
+---
+
+## License
+
+Copyright © 2025 CoinWatch. All rights reserved.
